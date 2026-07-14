@@ -1,10 +1,4 @@
-// content.js
-// Runs on youtube.com. Uses a MutationObserver instead of polling with
-// setInterval so it reacts instantly to DOM changes and uses less CPU.
-//
-// NOTE: YouTube frequently renames these CSS classes when they redesign
-// the player. If this stops working, open DevTools on an ad and check
-// whether these selectors still exist -- update them here if not.
+
 
 let enabled = true;
 
