@@ -2,7 +2,6 @@
 
 let enabled = true;
 
-// Load the on/off state saved from the popup (defaults to true/on).
 chrome.storage.local.get(["adblockEnabled"], (result) => {
   enabled = result.adblockEnabled !== false;
 });
@@ -16,7 +15,6 @@ chrome.storage.onChanged.addListener((changes) => {
 function skipAds() {
   if (!enabled) return;
 
-  // 1. Auto-click the "Skip Ad" button the moment it becomes clickable.
   const skipBtn = document.querySelector(
     ".ytp-ad-skip-button, .ytp-skip-ad-button, .ytp-ad-skip-button-modern"
   );
@@ -24,14 +22,11 @@ function skipAds() {
     skipBtn.click();
   }
 
-  // 2. For unskippable ads, mute + fast-forward through them so they
-  //    finish (almost) instantly instead of sitting through the full ad.
   const adShowing = document.querySelector(".ad-showing, .ad-interrupting");
   if (adShowing) {
     const video = document.querySelector("video");
     if (video) {
       video.muted = true;
-      // Jump to (near) the end of the ad clip if duration is known.
       if (video.duration && isFinite(video.duration)) {
         video.currentTime = video.duration;
       }
@@ -39,8 +34,6 @@ function skipAds() {
     }
   }
 
-  // 3. Remove overlay banners / promoted cards / companion ad slots
-  //    that would otherwise leave blank boxes on the page.
   const adSelectors = [
     ".ytp-ad-overlay-container",
     ".ytp-ad-text-overlay",
@@ -57,7 +50,6 @@ function skipAds() {
   });
 }
 
-// React instantly whenever YouTube's SPA re-renders the page/player.
 const observer = new MutationObserver(() => skipAds());
 observer.observe(document.documentElement, {
   childList: true,
