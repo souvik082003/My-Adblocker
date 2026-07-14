@@ -3,7 +3,8 @@
 A minimal Manifest V3 Chrome extension that blocks known YouTube/Google ad
 endpoints at the network level and skips/hides in-player ads via a content
 script. Built for personal, educational use.
-#link: https://github.com/souvik082003/My-Adblocker/archive/refs/heads/main.zip
+
+## link: https://github.com/souvik082003/My-Adblocker/archive/refs/heads/main.zip
 ## How to load it in Chrome
 
 1. Open `chrome://extensions` in Chrome.
