@@ -1,4 +1,4 @@
-# My Ad Blocker 
+# My Adblocker 
 
 A minimal Manifest V3 Chrome extension that blocks known YouTube/Google ad
 endpoints at the network level and skips/hides in-player ads via a content
