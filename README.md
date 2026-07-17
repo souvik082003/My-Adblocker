@@ -1,6 +1,6 @@
 # My Adblocker
 
-A lightweight **Manifest V3 Chrome extension** that blocks known YouTube/Google ad requests and automatically skips or minimizes in-player ads using Chrome's **Declarative Net Request API** and **Content Scripts**.
+A lightweight **Manifest V3 Chrome extension** that blocks known YouTube/Google ad requests and automatically skips or minimizes in-player ads using Chrome's **Declarative Net Request API** and **Content Scripts**
 
 
 ---
