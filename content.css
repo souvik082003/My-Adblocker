@@ -1,20 +1,8 @@
-/* ==========================================================================
-   Anti-Adblock Enforcement & Detection Modals
-   ========================================================================== */
 ytd-enforcement-message-view-model,
 tp-yt-paper-dialog:has(ytd-enforcement-message-view-model),
 ytd-popup-container:has(ytd-enforcement-message-view-model),
 tp-yt-iron-overlay-backdrop,
-yt-playability-error-supported-renderers:has(ytd-enforcement-message-view-model) {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-
-/* ==========================================================================
-   "Experiencing interruptions?" Toasts and Prompts
-   ========================================================================== */
+yt-playability-error-supported-renderers:has(ytd-enforcement-message-view-model),
 tp-yt-paper-toast#toast:has(a[href*="3037019"]),
 tp-yt-paper-toast#toast:has(a[href*="blocker"]),
 yt-notification-action-renderer:has(a[href*="3037019"]),
@@ -27,9 +15,6 @@ tp-yt-paper-toast.ytd-popup-container {
   pointer-events: none !important;
 }
 
-/* ==========================================================================
-   Page Ads: Banners, Promoted Videos & Feed Placements
-   ========================================================================== */
 #masthead-ad,
 ytd-banner-promo-renderer,
 ytd-promoted-sparkles-web-renderer,
@@ -45,9 +30,6 @@ ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-ads"] {
   display: none !important;
 }
 
-/* ==========================================================================
-   In-Player Overlays & Surveys
-   ========================================================================== */
 .ytp-ad-overlay-container,
 .ytp-ad-image-overlay,
 .ytp-ad-text-overlay,
@@ -58,9 +40,6 @@ ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-ads"] {
   display: none !important;
 }
 
-/* ==========================================================================
-   YouTube Shorts Ad Placements
-   ========================================================================== */
 ytd-reel-video-renderer:has(ytd-ad-slot-renderer) {
   display: none !important;
 }
