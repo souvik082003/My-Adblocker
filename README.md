@@ -1,11 +1,6 @@
-# My Adblocker
+# My Ad Blocker (v2.0)
 
-A lightweight **Manifest V3 Chrome extension** that blocks known YouTube/Google ad requests and automatically skips or minimizes in-player ads using Chrome's **Declarative Net Request API** and **Content Scripts**
-
-
----
-
-## Download
+A high-performance Manifest V3 Chrome extension designed for personal and educational research into how modern streaming platforms deliver video ads, detect ad blockers, and enforce playback restrictions.
 
 [![Download](https://img.shields.io/badge/Download-Latest-blue?style=for-the-badge)](https://github.com/souvik082003/My-Adblocker/archive/refs/heads/main.zip)
 
@@ -17,117 +12,64 @@ git clone https://github.com/souvik082003/My-Adblocker.git
 
 ---
 
-## Features
+## What's New & Performance Optimizations
 
-- Blocks known YouTube & Google ad network requests.
-- Automatically clicks the **Skip Ad** button.
-- Mutes and speeds up unskippable ads.
-- Removes ad overlays and banners.
-- Built with **Manifest V3**.
-- Saves enable/disable state using `chrome.storage.local`.
-- Simple popup to toggle the extension.
+1. **Ultra-Fast Video Reload & Start Time**:
+   - **Zero Network Retry Latency**: Third-party ad trackers (`doubleclick.net`, `googleadservices.com`, `googlesyndication.com`) are blocked cleanly without intercepting YouTube's internal player stream requests, preventing 3-5 second network retry backoffs.
+   - **Auto-Play on Navigation**: Automatically ensures video playback begins immediately on navigation (`yt-navigate-finish`) with no buffering pauses.
 
----
+2. **Instant Auto-Skipping with Multi-Event Simulation**:
+   - Detects all modern and legacy YouTube skip button variations (`.ytp-skip-ad-button`, `.ytp-ad-skip-button-modern`, nested button slots, etc.).
+   - Dispatches full pointer and mouse event sequences (`pointerdown`, `mousedown`, `click`, `pointerup`, `mouseup`) ensuring skip actions trigger regardless of YouTube's event listeners.
 
-## Installation
+3. **Smart 16x Fast-Forward & Audio Muting (With Auto-Restore)**:
+   - When an ad is displayed (`.ad-showing`, `.ad-interrupting`, preroll/midroll), the extension instantly mutes audio, sets video speed to **16x**, and advances `currentTime` to `duration`.
+   - **Safe Duration Check**: Protects against accidentally skipping the main video by only advancing `currentTime` if the clip duration is $\le$ 3 minutes.
+   - **Automatic Restoration**: Remembers your preferred playback rate (e.g. 1.25x or 1.5x) and unmuted volume state, instantly restoring them the millisecond the main video resumes.
 
-1. Download the extension using the button above.
-2. Extract the ZIP file.
-3. Open Chrome and go to:
+4. **Anti-Adblock Popup & Modal Bypass ("Bypass Detection")**:
+   - **Zero-Flash CSS (`content.css`)**: Suppresses `ytd-enforcement-message-view-model`, enforcement dialogs, and gray overlay backdrops (`tp-yt-iron-overlay-backdrop`) at the rendering engine level before they can appear.
+   - **Interruption Prompt Dismissal**: Automatically dismisses "Experiencing interruptions? Find out why" toast popups.
+   - **DOM Cleanser (`content.js`)**: Automatically tears down enforcement dialogs, unfreezes background page scrolling (`overflow: hidden`), and calls `video.play()` so videos never freeze.
 
-   ```
-   chrome://extensions
-   ```
+5. **In-Memory Ad Cue Sanitization (`inject.js`)**:
+   - Runs in the `MAIN` world at `document_start` to intercept `window.ytInitialPlayerResponse`, `Response.prototype.json`, and `JSON.parse`.
+   - Strips `adPlacements`, `playerAds`, and `adSlots` from player initialization data in memory. Because player cues never arrive, the player does not queue ads in the first place.
 
-4. Enable **Developer mode**.
-5. Click **Load unpacked**.
-6. Select the extracted **My-Adblocker** folder.
-7. Open YouTube and the extension will start working automatically.
-
----
-
-## How It Works
-
-### `rules.json`
-
-Uses Chrome's **Declarative Net Request API** to block requests sent to common advertising endpoints.
-
-Examples include:
-
-- `/api/stats/ads`
-- `/pagead/`
-- `doubleclick.net`
-- `googlesyndication.com`
+6. **YouTube Shorts Support**:
+   - Automatically detects sponsored reels in YouTube Shorts and skips down to the next short.
 
 ---
 
-### `content.js`
+## How to Load in Chrome
 
-A `MutationObserver` watches YouTube for changes and automatically:
-
-- Clicks **Skip Ad**
-- Mutes advertisements
-- Speeds up unskippable ads
-- Removes overlays and banners
-
----
-
-### `popup.html` & `popup.js`
-
-Provides a simple **On/Off** switch.
-
-The selected state is stored with `chrome.storage.local`, so it persists between browser sessions.
+1. Open Chrome and go to `chrome://extensions`.
+2. Enable **Developer mode** (toggle in the top-right corner).
+3. Click **Load unpacked** (top-left).
+4. Select this folder (`my-Adblocker`).
+5. Open [YouTube](https://www.youtube.com). The extension is active immediately.
+6. Click the extension icon in your browser toolbar to view the status or toggle it on/off.
 
 ---
 
-## Project Structure
+## File Structure
 
-```text
-My-Adblocker/
-├── manifest.json
-├── rules.json
-├── content.js
-├── popup.html
-├── popup.js
+```
+my-Adblocker/
+├── manifest.json   # Manifest V3 configuration with MAIN/ISOLATED worlds & DNR
+├── inject.js       # MAIN world script: in-memory JSON & ytInitialPlayerResponse pruning
+├── content.js      # ISOLATED world script: auto-skipping, fast-forwarding, volume restoration
+├── content.css     # Zero-flash CSS hiding ad placements and anti-adblock modals
+├── empty.js        # No-op stub resource for smooth 200 OK DNR redirects
+├── rules.json      # DeclarativeNetRequest routing rules for third-party ad networks
+├── popup.html      # Modern popup dashboard interface
+├── popup.js        # Toggle controller syncing storage and DNR rulesets
 └── icons/
-    └── icon128.png
+    └── icon128.png # Extension icon
 ```
 
 ---
 
-## Built With
+## Educational Notice
 
-- JavaScript (ES6)
-- HTML
-- Chrome Extension Manifest V3
-- Declarative Net Request API
-- Content Scripts
-- MutationObserver
-- Chrome Storage API
-
----
-
-## Limitations
-
-- YouTube may change its interface, requiring selector updates.
-- Some server-side injected ads cannot be blocked with network rules alone.
-- Future YouTube updates may affect functionality.
-- YouTube may detect ad blockers.
-
----
-
-## Contributing
-
-Contributions are welcome!
-
-1. Fork the repository.
-2. Create a new branch.
-3. Commit your changes.
-4. Open a Pull Request.
-
----
-
-## License
-
-Licensed under the **MIT License**.
-
+This repository is strictly for educational, personal research, and development purposes to study how web extensions interact with Single Page Applications (SPAs), HTML5 `<video>` APIs, and Declarative Net Request routing.

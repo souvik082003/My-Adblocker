@@ -1,64 +1,236 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Ad Blocker</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      width: 220px;
-      font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+      width: 260px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #0f0f0f;
+      color: #f1f1f1;
       padding: 16px;
-      text-align: center;
+      user-select: none;
     }
-    h1 {
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .title {
       font-size: 15px;
-      margin: 0 0 12px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
+
+    .badge {
+      font-size: 10px;
+      font-weight: 600;
+      background: rgba(255, 0, 0, 0.2);
+      color: #ff4e45;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .card {
+      background: #1e1e1e;
+      border: 1px solid #2e2e2e;
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #aaa;
+      transition: background 0.3s ease;
+    }
+
+    .dot.active {
+      background: #00e676;
+      box-shadow: 0 0 8px rgba(0, 230, 118, 0.6);
+    }
+
+    .dot.disabled {
+      background: #ff5252;
+      box-shadow: 0 0 8px rgba(255, 82, 82, 0.5);
+    }
+
+    /* Modern Toggle Switch */
     .switch {
       position: relative;
       display: inline-block;
-      width: 50px;
-      height: 26px;
+      width: 52px;
+      height: 28px;
     }
-    .switch input { display: none; }
+
+    .switch input {
+      display: none;
+    }
+
     .slider {
       position: absolute;
       cursor: pointer;
       inset: 0;
-      background-color: #ccc;
-      transition: 0.2s;
-      border-radius: 26px;
+      background-color: #383838;
+      transition: background-color 0.25s ease;
+      border-radius: 28px;
     }
+
     .slider:before {
       position: absolute;
       content: "";
-      height: 20px;
-      width: 20px;
+      height: 22px;
+      width: 22px;
       left: 3px;
       bottom: 3px;
-      background-color: white;
-      transition: 0.2s;
+      background-color: #ffffff;
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
+
     input:checked + .slider {
-      background-color: #d33;
+      background-color: #cc0000;
     }
+
     input:checked + .slider:before {
       transform: translateX(24px);
     }
-    #status {
-      margin-top: 10px;
-      font-size: 13px;
-      color: #555;
+
+    .stats-box {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: #888;
+    }
+
+    .stat-num {
+      font-size: 15px;
+      font-weight: 700;
+      color: #00e676;
+    }
+
+    .features {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 11px;
+      color: #aaa;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .feature-item svg {
+      width: 12px;
+      height: 12px;
+      color: #00e676;
+      flex-shrink: 0;
+    }
+
+    .footer {
+      margin-top: 12px;
+      font-size: 10px;
+      text-align: center;
+      color: #666;
     }
   </style>
 </head>
 <body>
-  <h1>YouTube Ad Blocker</h1>
-  <label class="switch">
-    <input type="checkbox" id="toggle" />
-    <span class="slider"></span>
-  </label>
-  <div id="status">Loading...</div>
+  <div class="header">
+    <div class="title">
+      My Ad Blocker
+      <span class="badge">v2.0</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <label class="switch">
+      <input type="checkbox" id="toggle" />
+      <span class="slider"></span>
+    </label>
+
+    <div class="status-row">
+      <span class="dot" id="status-dot"></span>
+      <span id="status">Loading...</span>
+    </div>
+
+    <div class="stats-box">
+      <span class="stat-label">Ads Skipped & Cleaned:</span>
+      <span class="stat-num" id="stat-count">0</span>
+    </div>
+  </div>
+
+  <div class="features">
+    <div class="feature-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      <span>Instant Auto-Skip & 16x Fast-Forward</span>
+    </div>
+    <div class="feature-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      <span>Anti-Adblock Popup & Modal Bypass</span>
+    </div>
+    <div class="feature-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      <span>5-Second Delay Defuser (0ms Startup)</span>
+    </div>
+    <div class="feature-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      <span>Playback Rate & Volume Restoration</span>
+    </div>
+  </div>
+
+  <div class="footer">Educational & Research Use Only</div>
+
   <script src="popup.js"></script>
 </body>
 </html>
