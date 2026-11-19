@@ -136,18 +136,11 @@
   function simulateClick(el) {
     if (!el) return false;
     try {
-      el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true }));
-      el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }));
-      el.click();
-      el.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, cancelable: true }));
-      el.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true }));
-      return true;
-    } catch (_) {
-      try {
+      if (typeof el.click === 'function') {
         el.click();
         return true;
-      } catch (_) {}
-    }
+      }
+    } catch (_) {}
     return false;
   }
 
