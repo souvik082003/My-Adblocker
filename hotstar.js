@@ -85,39 +85,80 @@
     }
   }
 
+  function simulateClick(el) {
+    if (!el) return false;
+    try {
+      el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true }));
+      el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }));
+      el.click();
+      el.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, cancelable: true }));
+      el.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true }));
+      return true;
+    } catch (_) {
+      try {
+        el.click();
+        return true;
+      } catch (_) {}
+    }
+    return false;
+  }
+
   function skipInStreamAds() {
     if (!enabled) return;
 
-    const adContainers = document.querySelectorAll('#ad-video-container, .ad-video-container');
-    for (const container of adContainers) {
-      const isVisible =
-        typeof container.checkVisibility === 'function'
-          ? container.checkVisibility({ visibilityProperty: true, opacityProperty: true })
-          : container.getClientRects().length > 0;
+    const adContainers = document.querySelectorAll(
+      '#ad-video-container, .ad-video-container, [data-testid="ad-container"], [data-testid="ad-video-container"], [data-testid="ad-player"]'
+    );
 
-      if (isVisible) {
-        const skipBtn = container.querySelector(
-          '.ad-skip-button, [data-testid="ad-skip-button"], button.ad-skip, .skip-ad-button'
-        );
-        if (skipBtn) {
+    if (adContainers.length === 0) {
+      adCounted = false;
+      return;
+    }
+
+    for (const container of adContainers) {
+      const skipBtn = container.querySelector(
+        '.ad-skip-button, [data-testid="ad-skip-button"], button.ad-skip, .skip-ad-button, button[aria-label*="skip" i], button[class*="skip" i]'
+      );
+      if (skipBtn) {
+        simulateClick(skipBtn);
+        countSkippedAd();
+      }
+
+      const videos = container.querySelectorAll('video');
+      for (const video of videos) {
+        video.muted = true;
+        video.playbackRate = 16.0;
+
+        const duration = video.duration;
+        if (Number.isFinite(duration) && duration > 0 && !(video.ended || video.currentTime >= duration)) {
           try {
-            skipBtn.click();
+            if (video.buffered && video.buffered.length > 0) {
+              const bufEnd = video.buffered.end(video.buffered.length - 1);
+              if (bufEnd > video.currentTime) {
+                video.currentTime = Math.min(bufEnd, duration);
+              } else {
+                video.currentTime = duration;
+              }
+            } else {
+              video.currentTime = duration;
+            }
+            video.dispatchEvent(new Event('ended'));
             countSkippedAd();
           } catch (_) {}
         }
 
-        const videos = container.querySelectorAll('video');
-        for (const video of videos) {
-          const duration = video.duration;
-          if (Number.isFinite(duration) && duration > 0 && !(video.ended || video.currentTime >= duration)) {
-            try {
-              video.currentTime = duration;
-              countSkippedAd();
-            } catch (_) {}
-          }
+        if (video.paused && !video.ended) {
+          video.play().catch(() => {});
         }
-      } else {
-        adCounted = false;
+      }
+    }
+
+    const mainVideos = document.querySelectorAll('video');
+    for (const mv of mainVideos) {
+      if (!mv.closest('#ad-video-container, .ad-video-container, [data-testid="ad-container"]')) {
+        if (mv.paused && !mv.ended && mv.currentTime > 0) {
+          mv.play().catch(() => {});
+        }
       }
     }
   }
@@ -126,13 +167,14 @@
     if (event.target instanceof HTMLVideoElement) {
       cleanupBillboardVideos();
       handleBillboardVideo(event.target);
-      if (event.target.closest('#ad-video-container, .ad-video-container')) {
+      if (event.target.closest('#ad-video-container, .ad-video-container, [data-testid="ad-container"]')) {
         skipInStreamAds();
       }
     }
   }
 
   const observer = new MutationObserver((mutations) => {
+    let hasNewAdContainer = false;
     for (const m of mutations) {
       if (m.type === 'attributes') {
         pendingNodes.add(m.target);
@@ -140,10 +182,22 @@
         for (const node of m.addedNodes) {
           if (node.nodeType === Node.ELEMENT_NODE) {
             pendingNodes.add(node);
+            if (
+              node.id === 'ad-video-container' ||
+              (node.className && typeof node.className === 'string' && node.className.includes('ad-video')) ||
+              (node.getAttribute && node.getAttribute('data-testid')?.includes('ad'))
+            ) {
+              hasNewAdContainer = true;
+            }
           }
         }
       }
     }
+
+    if (hasNewAdContainer) {
+      skipInStreamAds();
+    }
+
     if (debounceTimeout === null) {
       debounceTimeout = setTimeout(flushPendingNodes, 50);
     }
@@ -158,10 +212,10 @@
 
   scanNodeForVideos(document);
 
-  ['play', 'loadedmetadata', 'durationchange'].forEach((eventType) => {
+  ['play', 'playing', 'loadedmetadata', 'durationchange', 'timeupdate', 'canplay'].forEach((eventType) => {
     document.addEventListener(eventType, onVideoEvent, true);
   });
 
-  setInterval(skipInStreamAds, 250);
+  setInterval(skipInStreamAds, 100);
   skipInStreamAds();
 })();

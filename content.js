@@ -192,10 +192,21 @@
         }
 
         video.muted = true;
-        video.playbackRate = 16;
+        video.playbackRate = 16.0;
+
+        clickSkipButtons();
 
         if (video.duration && isFinite(video.duration) && video.duration <= 180 && video.currentTime < video.duration) {
-          video.currentTime = video.duration;
+          if (video.buffered && video.buffered.length > 0) {
+            const bufEnd = video.buffered.end(video.buffered.length - 1);
+            if (bufEnd > video.currentTime) {
+              video.currentTime = Math.min(bufEnd, video.duration);
+            } else {
+              video.currentTime = video.duration;
+            }
+          } else {
+            video.currentTime = video.duration;
+          }
           countSkippedAd();
         }
 
@@ -281,5 +292,5 @@
 
   processAds();
   attachVideoListeners();
-  setInterval(processAds, 250);
+  setInterval(processAds, 100);
 })();
