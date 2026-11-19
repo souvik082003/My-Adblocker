@@ -47,7 +47,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["inject.js", "empty.js"],
+      "resources": ["inject.js"],
       "matches": ["*://*.youtube.com/*"]
     }
   ],
