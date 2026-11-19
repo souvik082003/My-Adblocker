@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "My Ad Blocker",
-  "version": "2.1",
+  "version": "3.0",
   "description": "Smart Ad Blocker & Auto-Skipper for YouTube and Disney+ Hotstar. Built for personal educational use.",
   "permissions": [
     "declarativeNetRequest",
