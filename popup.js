@@ -97,52 +97,59 @@ function renderState(enabled) {
   }
 }
 
-function detectActiveTab() {
+function detectActiveTab(callback) {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const activeTab = tabs && tabs[0];
-    if (!activeTab || !activeTab.url) return;
+    const rawUrl = (activeTab && (activeTab.url || activeTab.pendingUrl)) || '';
 
-    try {
-      const url = new URL(activeTab.url);
-      const host = url.hostname.toLowerCase();
+    if (rawUrl) {
+      try {
+        const url = new URL(rawUrl);
+        const host = url.hostname.toLowerCase();
 
-      if (host.includes('youtube.com')) {
-        activePlatform = 'youtube';
-        if (siteIcon) siteIcon.textContent = '▶️';
-        if (siteDomain) siteDomain.textContent = 'YouTube';
-        if (siteStatus) siteStatus.textContent = 'Shield Active';
-      } else if (host.includes('hotstar.com') || host.includes('jiohotstar.com') || host.includes('jiocinema.com')) {
-        activePlatform = 'hotstar';
-        if (siteIcon) siteIcon.textContent = '⭐';
-        if (siteDomain) siteDomain.textContent = 'JioHotstar';
-        if (siteStatus) siteStatus.textContent = 'Shield Active';
-      } else {
-        activePlatform = 'other';
-        if (siteIcon) siteIcon.textContent = '🌐';
-        if (siteDomain) siteDomain.textContent = host || 'Active Tab';
-        if (siteStatus) siteStatus.textContent = 'Standard Webpage';
-      }
-    } catch (_) {}
+        if (host.includes('youtube.com') || host.includes('youtu.be')) {
+          activePlatform = 'youtube';
+          if (siteIcon) siteIcon.textContent = '▶️';
+          if (siteDomain) siteDomain.textContent = 'YouTube';
+          if (siteStatus) siteStatus.textContent = 'Shield Active';
+        } else if (host.includes('hotstar.com') || host.includes('jiohotstar.com') || host.includes('jiocinema.com')) {
+          activePlatform = 'hotstar';
+          if (siteIcon) siteIcon.textContent = '⭐';
+          if (siteDomain) siteDomain.textContent = 'JioHotstar';
+          if (siteStatus) siteStatus.textContent = 'Shield Active';
+        } else {
+          activePlatform = 'other';
+          if (siteIcon) siteIcon.textContent = '🌐';
+          if (siteDomain) siteDomain.textContent = host || 'Active Tab';
+          if (siteStatus) siteStatus.textContent = 'Standard Webpage';
+        }
+      } catch (_) {}
+    }
 
-    updateMetrics();
+    if (typeof callback === 'function') {
+      callback();
+    } else {
+      updateMetrics();
+    }
   });
 }
 
-chrome.storage.local.get(['adblockEnabled', 'adblockCount', 'adblockCount_youtube', 'adblockCount_hotstar'], (result) => {
-  const enabled = result.adblockEnabled !== false;
-  renderState(enabled);
-  if (chrome.declarativeNetRequest && chrome.declarativeNetRequest.updateEnabledRulesets) {
-    chrome.declarativeNetRequest.updateEnabledRulesets({
-      enableRulesetIds: enabled ? ['ruleset_1'] : [],
-      disableRulesetIds: enabled ? [] : ['ruleset_1']
-    }).catch(() => {});
-  }
-  updateMetrics({
-    adblockCount: result.adblockCount || 0,
-    adblockCount_youtube: result.adblockCount_youtube || 0,
-    adblockCount_hotstar: result.adblockCount_hotstar || 0
+detectActiveTab(() => {
+  chrome.storage.local.get(['adblockEnabled', 'adblockCount', 'adblockCount_youtube', 'adblockCount_hotstar'], (result) => {
+    const enabled = result.adblockEnabled !== false;
+    renderState(enabled);
+    if (chrome.declarativeNetRequest && chrome.declarativeNetRequest.updateEnabledRulesets) {
+      chrome.declarativeNetRequest.updateEnabledRulesets({
+        enableRulesetIds: enabled ? ['ruleset_1'] : [],
+        disableRulesetIds: enabled ? [] : ['ruleset_1']
+      }).catch(() => {});
+    }
+    updateMetrics({
+      adblockCount: result.adblockCount || 0,
+      adblockCount_youtube: result.adblockCount_youtube || 0,
+      adblockCount_hotstar: result.adblockCount_hotstar || 0
+    });
   });
-  detectActiveTab();
 });
 
 chrome.storage.onChanged.addListener((changes) => {

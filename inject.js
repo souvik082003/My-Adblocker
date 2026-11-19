@@ -53,19 +53,36 @@
   function pruneAdData(obj) {
     if (!isAdblockActive() || !obj || typeof obj !== 'object') return obj;
 
+    let blockedCount = 0;
     try {
       if (obj.adPlacements) {
+        if (Array.isArray(obj.adPlacements)) {
+          blockedCount += obj.adPlacements.length || 1;
+        } else {
+          blockedCount++;
+        }
         delete obj.adPlacements;
       }
       if (obj.playerAds) {
+        if (Array.isArray(obj.playerAds)) {
+          blockedCount += obj.playerAds.length || 1;
+        } else {
+          blockedCount++;
+        }
         delete obj.playerAds;
       }
       if (obj.adSlots) {
+        if (Array.isArray(obj.adSlots)) {
+          blockedCount += obj.adSlots.length || 1;
+        } else {
+          blockedCount++;
+        }
         delete obj.adSlots;
       }
 
       if (obj.auxiliaryUi && obj.auxiliaryUi.messageRenderers) {
         if (obj.auxiliaryUi.messageRenderers.enforcementMessageViewModel) {
+          blockedCount++;
           delete obj.auxiliaryUi.messageRenderers.enforcementMessageViewModel;
         }
       }
@@ -74,6 +91,10 @@
         pruneAdData(obj.playerResponse);
       }
     } catch (_) {}
+
+    if (blockedCount > 0) {
+      window.postMessage({ type: 'ADBLOCK_COUNT', count: blockedCount }, '*');
+    }
 
     return obj;
   }

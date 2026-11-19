@@ -67,20 +67,41 @@
     }
   });
 
-  function countSkippedAd() {
-    if (adCounted) return;
-    adCounted = true;
-    try {
-      chrome.storage.local.get(['adblockCount', 'adblockCount_youtube'], (res) => {
-        const count = (res.adblockCount || 0) + 1;
-        const ytCount = (res.adblockCount_youtube || 0) + 1;
-        chrome.storage.local.set({
-          adblockCount: count,
-          adblockCount_youtube: ytCount
+  let pendingCount = 0;
+  let saveTimeout = null;
+
+  function incrementBlockCount(amount = 1, platform = 'youtube') {
+    if (!enabled) return;
+    pendingCount += amount;
+
+    if (saveTimeout !== null) {
+      clearTimeout(saveTimeout);
+    }
+
+    saveTimeout = setTimeout(() => {
+      const toAdd = pendingCount;
+      pendingCount = 0;
+      saveTimeout = null;
+
+      try {
+        const platformKey = platform === 'youtube' ? 'adblockCount_youtube' : 'adblockCount_hotstar';
+        chrome.storage.local.get(['adblockCount', platformKey], (res) => {
+          const total = (res.adblockCount || 0) + toAdd;
+          const siteTotal = (res[platformKey] || 0) + toAdd;
+          chrome.storage.local.set({
+            adblockCount: total,
+            [platformKey]: siteTotal
+          });
         });
-      });
-    } catch (_) {}
+      } catch (_) {}
+    }, 80);
   }
+
+  window.addEventListener('message', (e) => {
+    if (e.data && e.data.type === 'ADBLOCK_COUNT' && typeof e.data.count === 'number' && e.data.count > 0) {
+      incrementBlockCount(e.data.count, 'youtube');
+    }
+  });
 
   const SKIP_BUTTON_SELECTORS = [
     'button.ytp-ad-skip-button-modern',
@@ -132,7 +153,7 @@
       const btn = document.querySelector(sel);
       if (btn && btn.offsetParent !== null) {
         if (simulateClick(btn)) {
-          countSkippedAd();
+          incrementBlockCount(1, 'youtube');
           return true;
         }
       }
@@ -209,7 +230,7 @@
         const nextBtn = document.querySelector('#navigation-button-down button, #shorts-container #navigation-button-down');
         if (nextBtn) {
           simulateClick(nextBtn);
-          countSkippedAd();
+          incrementBlockCount(1, 'youtube');
         }
       }
     }
@@ -230,7 +251,7 @@
 
         if (!isAdActive) {
           isAdActive = true;
-          adCounted = false;
+          incrementBlockCount(1, 'youtube');
           if (video.playbackRate > 0 && video.playbackRate <= 4) {
             userPlaybackRate = video.playbackRate;
           }
@@ -251,7 +272,6 @@
           } else {
             video.currentTime = video.duration;
           }
-          countSkippedAd();
         }
 
         clickSkipButtons();
@@ -272,7 +292,6 @@
           userPlaybackRate = video.playbackRate;
         }
         userMuted = video.muted;
-        adCounted = false;
 
         if (video.paused && !video.ended && video.currentTime > 0) {
           const hasInterruption = document.querySelector('tp-yt-paper-toast#toast, yt-notification-action-renderer');
@@ -286,7 +305,19 @@
     for (const sel of AD_DOM_SELECTORS) {
       try {
         const adElements = document.querySelectorAll(sel);
-        adElements.forEach((el) => el.remove());
+        if (adElements.length > 0) {
+          let count = 0;
+          adElements.forEach((el) => {
+            if (!el.__adblockCounted) {
+              el.__adblockCounted = true;
+              count++;
+            }
+            el.remove();
+          });
+          if (count > 0) {
+            incrementBlockCount(count, 'youtube');
+          }
+        }
       } catch (_) {}
     }
   }

@@ -6,7 +6,8 @@
   "permissions": [
     "declarativeNetRequest",
     "storage",
-    "activeTab"
+    "activeTab",
+    "tabs"
   ],
   "host_permissions": [
     "*://*.youtube.com/*",
