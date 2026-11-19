@@ -38,9 +38,13 @@
     if (adCounted) return;
     adCounted = true;
     try {
-      chrome.storage.local.get(['adblockCount'], (res) => {
+      chrome.storage.local.get(['adblockCount', 'adblockCount_youtube'], (res) => {
         const count = (res.adblockCount || 0) + 1;
-        chrome.storage.local.set({ adblockCount: count });
+        const ytCount = (res.adblockCount_youtube || 0) + 1;
+        chrome.storage.local.set({
+          adblockCount: count,
+          adblockCount_youtube: ytCount
+        });
       });
     } catch (_) {}
   }

@@ -1,23 +1,24 @@
-# My Ad Blocker `v3.0`
+# Universal AdBlocker `v3.0`
 
 [![Manifest V3](https://img.shields.io/badge/Manifest-V3-success?style=for-the-badge&logo=googlechrome&logoColor=white)](https://developer.chrome.com/docs/extensions/mv3/intro/)
 [![Version](https://img.shields.io/badge/Version-3.0-blue?style=for-the-badge)](manifest.json)
-[![Supported Platforms](https://img.shields.io/badge/Platforms-YouTube%20%7C%20Hotstar-ff0000?style=for-the-badge)](https://github.com/souvik082003/My-Adblocker)
+[![Supported Platforms](https://img.shields.io/badge/Platforms-YouTube%20%7C%20JioHotstar-ff0000?style=for-the-badge)](https://github.com/souvik082003/My-Adblocker)
 [![License](https://img.shields.io/badge/License-Educational-green?style=for-the-badge)](README.md#educational-notice)
 
-A high-performance, lightweight **Manifest V3** browser extension engineered for personal educational research into how modern streaming platforms deliver video ads, execute anti-adblock detection, and handle media playback state.
+**Universal AdBlocker** is a high-performance, lightweight **Manifest V3** browser extension engineered for personal educational research into how modern streaming platforms deliver video ads, execute anti-adblock detection, and handle media playback state.
 
-Built with native performance, zero external runtime dependencies, and a modern glassmorphic dashboard.
+Supports full in-stream video ad skipping and banner suppression across both **YouTube** and **JioHotstar** (`hotstar.com`, `jiohotstar.com`, `jiocinema.com`).
 
 ---
 
 ## What's New in Version 3.0
 
+- **Project Rebrand to Universal AdBlocker**: Enhanced architecture supporting universal multi-service streaming ad prevention across YouTube and JioHotstar.
+- **Website-Specific Ad Counter**: The extension popup now detects your active tab and displays the real-time ad block count for that specific website, alongside platform breakdown counters for YouTube and JioHotstar.
 - **Zero-Reload Dynamic Toggle**: Toggle protection ON or OFF in real time without refreshing the page. Employs `:root:not(.adblock-disabled)` CSS selector scoping and cross-world `window.postMessage` communication to release or engage ad-blocking rules instantly.
-- **Redesigned Glassmorphic Dashboard**: A 320px dark OLED popup interface with interactive glow status pills (`SHIELD ACTIVE` vs `SHIELD PAUSED`), per-platform status indicators (YouTube & Disney+ Hotstar), and quick-action buttons.
-- **Live Performance & Time-Saved Metrics**: Real-time counter of total ads skipped and a dynamic algorithm estimating hours, minutes, and seconds saved from ad interruptions.
+- **Glassmorphic OLED Dashboard**: Modern dark popup interface with interactive glow status pills (`SHIELD ACTIVE` vs `SHIELD PAUSED`), per-platform status indicators, and quick-action buttons.
 - **Buffer-Aware 16x Video Acceleration**: Prevents playback buffering and seeking freezes by capping fast-forward seeks strictly to the actively buffered range (`video.buffered.end`) while dispatching synthetic `ended` and skip events.
-- **Quick Controls**: Includes instant "Reload Tab" with animated feedback and "Reset Stats" counter clearing.
+- **Quick Controls**: One-click "Reload Tab" with animated feedback and "Reset Stats" counter clearing.
 
 ---
 
@@ -30,7 +31,7 @@ Built with native performance, zero external runtime dependencies, and a modern 
 - **Anti-Adblock Modal Dismissal**: Automatically catches and removes enforcement dialogs (`ytd-enforcement-message-view-model`), dismisses warning popups, unblocks page scrolling (`overflow: hidden` clearance), and suppresses "Experiencing interruptions" toast notifications.
 - **YouTube Shorts Auto-Advancement**: Detects sponsored reels in YouTube Shorts and skips immediately to the next video.
 
-### 2. Disney+ Hotstar Engine
+### 2. JioHotstar Engine
 - **In-Stream Ad Fast-Forward & Auto-Skip**: Monitors `#ad-video-container`, `.ad-video-container`, and `[data-testid="ad-container"]`. Automatically clicks skip buttons and advances in-stream video ads to completion.
 - **Billboard Tray & Video Suppression**: Mutes, pauses, and neutralizes autoplay on billboard promotional banner videos (`[data-testid="bbtype-video"]`) while preserving normal homepage video carousels and trays.
 - **Overlay & Banner Cleanser**: Hides sponsored ad banners, promotional headers, and live-stream commercial break call-to-action overlays (`[data-testid="ad-head"]`, `[data-testid="bbtype-image"]`).
@@ -43,13 +44,13 @@ Built with native performance, zero external runtime dependencies, and a modern 
 | :--- | :--- | :--- | :--- |
 | `manifest.json` | Manifest V3 Config | Browser Startup | Declares DNR rulesets, content scripts, and permissions |
 | `inject.js` | `MAIN` World | `document_start` | Hooks in-memory JSON parsing, `ytcfg`, and player responses |
-| `content.js` | Isolated Content Script | `document_start` | 16x fast-forward, button clicker, modal cleanser, and state sync |
+| `content.js` | Isolated Content Script | `document_start` | 16x fast-forward, button clicker, modal cleanser, and site metrics |
 | `content.css` | Isolated Style Injection | `document_start` | Zero-flash hiding rules scoped with `:root:not(.adblock-disabled)` |
-| `hotstar.js` | Isolated Content Script | `document_start` | Billboard video neutralizer and Hotstar in-stream ad skipper |
-| `hotstar.css` | Isolated Style Injection | `document_start` | Scoped CSS rules hiding Hotstar billboards and overlay banners |
+| `hotstar.js` | Isolated Content Script | `document_start` | Billboard video neutralizer and JioHotstar ad skipper |
+| `hotstar.css` | Isolated Style Injection | `document_start` | Scoped CSS rules hiding JioHotstar billboards and overlay banners |
 | `rules.json` | Declarative Net Request | Network Level | Blocks third-party tracking and telemetry requests |
 | `popup.html` | Extension Action Popup | User Click | Glassmorphic interface with metrics, controls, and platform pills |
-| `popup.js` | Extension Action Popup | User Click | Manages storage persistence, ruleset toggling, and tab reload |
+| `popup.js` | Extension Action Popup | User Click | Manages site detection, metrics display, and storage sync |
 
 ---
 
@@ -67,16 +68,16 @@ Built with native performance, zero external runtime dependencies, and a modern 
 5. Click **Load unpacked** in the top toolbar.
 6. Select the `my-Adblocker` folder.
 7. Pin the extension to your toolbar.
-8. Navigate to [YouTube](https://www.youtube.com) or [Disney+ Hotstar](https://www.hotstar.com) and enjoy uninterrupted playback!
+8. Navigate to [YouTube](https://www.youtube.com) or [JioHotstar](https://www.hotstar.com) and enjoy uninterrupted playback!
 
 ---
 
 ## Permissions Breakdown
 
 - **`declarativeNetRequest`**: Used to block third-party tracking scripts and ad networks at the network routing level without slowing down page rendering.
-- **`storage`**: Used to save user preferences (`adblockEnabled`) and persist total ad block counts (`adblockCount`) locally on your device.
-- **`activeTab`**: Used by the popup dashboard to reload the active tab when the user clicks the "Reload Tab" button.
-- **`host_permissions`**: Scoped strictly to YouTube, Disney+ Hotstar, and relevant ad delivery hosts (`googlesyndication.com`, `doubleclick.net`, `googleadservices.com`).
+- **`storage`**: Used to save user preferences (`adblockEnabled`) and persist total and per-site ad block counts locally on your device.
+- **`activeTab`**: Used by the popup dashboard to detect the active website and reload the active tab when requested.
+- **`host_permissions`**: Scoped strictly to YouTube, JioHotstar domains (`hotstar.com`, `jiohotstar.com`, `jiocinema.com`), and relevant ad delivery hosts (`googlesyndication.com`, `doubleclick.net`, `googleadservices.com`).
 
 *Zero data is collected, logged, or transmitted outside your local browser environment.*
 

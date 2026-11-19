@@ -2,12 +2,26 @@ const toggle = document.getElementById('toggle');
 const heroCard = document.getElementById('hero-card');
 const statusText = document.getElementById('status-text');
 const heroDesc = document.getElementById('hero-desc');
+const siteIcon = document.getElementById('site-icon');
+const siteDomain = document.getElementById('site-domain');
+const siteStatus = document.getElementById('site-status');
+const siteCount = document.getElementById('site-count');
+const statSiteCount = document.getElementById('stat-site-count');
 const ytPill = document.getElementById('yt-pill');
 const hotstarPill = document.getElementById('hotstar-pill');
+const ytCount = document.getElementById('yt-count');
+const hotstarCount = document.getElementById('hotstar-count');
 const statCount = document.getElementById('stat-count');
 const statTime = document.getElementById('stat-time');
 const reloadBtn = document.getElementById('reload-btn');
 const resetBtn = document.getElementById('reset-btn');
+
+let activePlatform = 'other';
+let cachedStorage = {
+  adblockCount: 0,
+  adblockCount_youtube: 0,
+  adblockCount_hotstar: 0
+};
 
 function formatTimeSaved(count) {
   const seconds = count * 16;
@@ -23,14 +37,29 @@ function formatTimeSaved(count) {
   return `${hours}h ${remainingMins}m`;
 }
 
-function updateMetrics(count) {
-  const safeCount = Number.isFinite(count) ? count : 0;
-  if (statCount) {
-    statCount.textContent = safeCount.toLocaleString();
+function updateMetrics(data) {
+  if (data) {
+    cachedStorage = { ...cachedStorage, ...data };
   }
-  if (statTime) {
-    statTime.textContent = formatTimeSaved(safeCount);
+
+  const total = Number.isFinite(cachedStorage.adblockCount) ? cachedStorage.adblockCount : 0;
+  const yt = Number.isFinite(cachedStorage.adblockCount_youtube) ? cachedStorage.adblockCount_youtube : 0;
+  const hotstar = Number.isFinite(cachedStorage.adblockCount_hotstar) ? cachedStorage.adblockCount_hotstar : 0;
+
+  if (statCount) statCount.textContent = total.toLocaleString();
+  if (statTime) statTime.textContent = formatTimeSaved(total);
+  if (ytCount) ytCount.textContent = `${yt.toLocaleString()} blocked`;
+  if (hotstarCount) hotstarCount.textContent = `${hotstar.toLocaleString()} blocked`;
+
+  let currentSiteNum = 0;
+  if (activePlatform === 'youtube') {
+    currentSiteNum = yt;
+  } else if (activePlatform === 'hotstar') {
+    currentSiteNum = hotstar;
   }
+
+  if (siteCount) siteCount.textContent = currentSiteNum.toLocaleString();
+  if (statSiteCount) statSiteCount.textContent = currentSiteNum.toLocaleString();
 }
 
 function renderState(enabled) {
@@ -68,18 +97,58 @@ function renderState(enabled) {
   }
 }
 
-chrome.storage.local.get(['adblockEnabled', 'adblockCount'], (result) => {
+function detectActiveTab() {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const activeTab = tabs && tabs[0];
+    if (!activeTab || !activeTab.url) return;
+
+    try {
+      const url = new URL(activeTab.url);
+      const host = url.hostname.toLowerCase();
+
+      if (host.includes('youtube.com')) {
+        activePlatform = 'youtube';
+        if (siteIcon) siteIcon.textContent = '▶️';
+        if (siteDomain) siteDomain.textContent = 'YouTube';
+        if (siteStatus) siteStatus.textContent = 'Shield Active';
+      } else if (host.includes('hotstar.com') || host.includes('jiohotstar.com') || host.includes('jiocinema.com')) {
+        activePlatform = 'hotstar';
+        if (siteIcon) siteIcon.textContent = '⭐';
+        if (siteDomain) siteDomain.textContent = 'JioHotstar';
+        if (siteStatus) siteStatus.textContent = 'Shield Active';
+      } else {
+        activePlatform = 'other';
+        if (siteIcon) siteIcon.textContent = '🌐';
+        if (siteDomain) siteDomain.textContent = host || 'Active Tab';
+        if (siteStatus) siteStatus.textContent = 'Standard Webpage';
+      }
+    } catch (_) {}
+
+    updateMetrics();
+  });
+}
+
+chrome.storage.local.get(['adblockEnabled', 'adblockCount', 'adblockCount_youtube', 'adblockCount_hotstar'], (result) => {
   const enabled = result.adblockEnabled !== false;
   renderState(enabled);
-  updateMetrics(result.adblockCount || 0);
+  updateMetrics({
+    adblockCount: result.adblockCount || 0,
+    adblockCount_youtube: result.adblockCount_youtube || 0,
+    adblockCount_hotstar: result.adblockCount_hotstar || 0
+  });
+  detectActiveTab();
 });
 
 chrome.storage.onChanged.addListener((changes) => {
   if (changes.adblockEnabled) {
     renderState(changes.adblockEnabled.newValue !== false);
   }
-  if (changes.adblockCount) {
-    updateMetrics(changes.adblockCount.newValue || 0);
+  const nextData = {};
+  if (changes.adblockCount) nextData.adblockCount = changes.adblockCount.newValue;
+  if (changes.adblockCount_youtube) nextData.adblockCount_youtube = changes.adblockCount_youtube.newValue;
+  if (changes.adblockCount_hotstar) nextData.adblockCount_hotstar = changes.adblockCount_hotstar.newValue;
+  if (Object.keys(nextData).length > 0) {
+    updateMetrics(nextData);
   }
 });
 
@@ -113,8 +182,16 @@ if (reloadBtn) {
 
 if (resetBtn) {
   resetBtn.addEventListener('click', () => {
-    chrome.storage.local.set({ adblockCount: 0 }, () => {
-      updateMetrics(0);
+    chrome.storage.local.set({
+      adblockCount: 0,
+      adblockCount_youtube: 0,
+      adblockCount_hotstar: 0
+    }, () => {
+      updateMetrics({
+        adblockCount: 0,
+        adblockCount_youtube: 0,
+        adblockCount_hotstar: 0
+      });
       const originalHTML = resetBtn.innerHTML;
       resetBtn.textContent = 'Reset!';
       setTimeout(() => {

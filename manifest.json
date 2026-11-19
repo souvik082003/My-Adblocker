@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "My Ad Blocker",
+  "name": "Universal AdBlocker",
   "version": "3.0",
-  "description": "Smart Ad Blocker & Auto-Skipper for YouTube and Disney+ Hotstar. Built for personal educational use.",
+  "description": "Smart Universal Ad Blocker & Auto-Skipper for YouTube and JioHotstar. Built for personal educational use.",
   "permissions": [
     "declarativeNetRequest",
     "storage",
@@ -11,6 +11,8 @@
   "host_permissions": [
     "*://*.youtube.com/*",
     "*://*.hotstar.com/*",
+    "*://*.jiohotstar.com/*",
+    "*://*.jiocinema.com/*",
     "*://*.googlesyndication.com/*",
     "*://*.doubleclick.net/*",
     "*://*.googleadservices.com/*"
@@ -38,7 +40,11 @@
       "run_at": "document_start"
     },
     {
-      "matches": ["*://*.hotstar.com/*"],
+      "matches": [
+        "*://*.hotstar.com/*",
+        "*://*.jiohotstar.com/*",
+        "*://*.jiocinema.com/*"
+      ],
       "js": ["hotstar.js"],
       "css": ["hotstar.css"],
       "run_at": "document_start",

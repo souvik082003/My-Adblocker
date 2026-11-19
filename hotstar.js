@@ -26,9 +26,13 @@
     if (adCounted) return;
     adCounted = true;
     try {
-      chrome.storage.local.get(['adblockCount'], (res) => {
+      chrome.storage.local.get(['adblockCount', 'adblockCount_hotstar'], (res) => {
         const count = (res.adblockCount || 0) + 1;
-        chrome.storage.local.set({ adblockCount: count });
+        const hotstarCount = (res.adblockCount_hotstar || 0) + 1;
+        chrome.storage.local.set({
+          adblockCount: count,
+          adblockCount_hotstar: hotstarCount
+        });
       });
     } catch (_) {}
   }
