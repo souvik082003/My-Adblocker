@@ -5,7 +5,8 @@
   "description": "Smart Ad Blocker & Auto-Skipper for YouTube and Disney+ Hotstar. Built for personal educational use.",
   "permissions": [
     "declarativeNetRequest",
-    "storage"
+    "storage",
+    "activeTab"
   ],
   "host_permissions": [
     "*://*.youtube.com/*",

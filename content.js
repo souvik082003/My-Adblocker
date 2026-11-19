@@ -7,13 +7,30 @@
   let userPlaybackRate = 1.0;
   let userMuted = false;
 
+  function syncEnabled(state) {
+    enabled = state !== false;
+    if (document.documentElement) {
+      document.documentElement.classList.toggle('adblock-disabled', !enabled);
+      document.documentElement.dataset.adblockEnabled = String(enabled);
+    }
+    window.postMessage({ type: 'ADBLOCK_TOGGLE', enabled }, '*');
+    if (!enabled && isAdActive) {
+      const video = document.querySelector('video.html5-main-video') || document.querySelector('video');
+      if (video) {
+        video.playbackRate = userPlaybackRate;
+        video.muted = userMuted;
+      }
+      isAdActive = false;
+    }
+  }
+
   chrome.storage.local.get(['adblockEnabled'], (result) => {
-    enabled = result.adblockEnabled !== false;
+    syncEnabled(result.adblockEnabled);
   });
 
   chrome.storage.onChanged.addListener((changes) => {
     if (changes.adblockEnabled) {
-      enabled = changes.adblockEnabled.newValue !== false;
+      syncEnabled(changes.adblockEnabled.newValue);
     }
   });
 

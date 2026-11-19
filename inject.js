@@ -1,8 +1,24 @@
 (function () {
   'use strict';
 
+  let isEnabled = true;
+
+  window.addEventListener('message', (e) => {
+    if (e.data && e.data.type === 'ADBLOCK_TOGGLE') {
+      isEnabled = e.data.enabled !== false;
+    }
+  });
+
+  function isAdblockActive() {
+    if (!isEnabled) return false;
+    if (document.documentElement && document.documentElement.dataset.adblockEnabled === 'false') {
+      return false;
+    }
+    return true;
+  }
+
   function pruneAdData(obj) {
-    if (!obj || typeof obj !== 'object') return obj;
+    if (!isAdblockActive() || !obj || typeof obj !== 'object') return obj;
 
     try {
       if (obj.adPlacements) {

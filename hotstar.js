@@ -4,13 +4,21 @@
   let enabled = true;
   let adCounted = false;
 
+  function syncEnabled(state) {
+    enabled = state !== false;
+    if (document.documentElement) {
+      document.documentElement.classList.toggle('adblock-disabled', !enabled);
+      document.documentElement.dataset.adblockEnabled = String(enabled);
+    }
+  }
+
   chrome.storage.local.get(['adblockEnabled'], (result) => {
-    enabled = result.adblockEnabled !== false;
+    syncEnabled(result.adblockEnabled);
   });
 
   chrome.storage.onChanged.addListener((changes) => {
     if (changes.adblockEnabled) {
-      enabled = changes.adblockEnabled.newValue !== false;
+      syncEnabled(changes.adblockEnabled.newValue);
     }
   });
 

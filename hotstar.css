@@ -1,11 +1,11 @@
-[data-testid="bbtype-image"],
-[data-testid="bbtype-video"],
-[data-testid="lt-tray-id"]:has(> [data-testid="bbtype-image"]:only-child),
-[data-testid="lt-tray-id"]:has(> [data-testid="bbtype-video"]:only-child),
-[data-testid="ad-head"]:has([data-testid="ad-details"]),
-.ad-overlay,
-.player-ad-overlay,
-[data-testid="ad-timer"],
-[data-testid="ad-countdown"] {
+:root:not(.adblock-disabled) [data-testid="bbtype-image"],
+:root:not(.adblock-disabled) [data-testid="bbtype-video"],
+:root:not(.adblock-disabled) [data-testid="lt-tray-id"]:has(> [data-testid="bbtype-image"]:only-child),
+:root:not(.adblock-disabled) [data-testid="lt-tray-id"]:has(> [data-testid="bbtype-video"]:only-child),
+:root:not(.adblock-disabled) [data-testid="ad-head"]:has([data-testid="ad-details"]),
+:root:not(.adblock-disabled) .ad-overlay,
+:root:not(.adblock-disabled) .player-ad-overlay,
+:root:not(.adblock-disabled) [data-testid="ad-timer"],
+:root:not(.adblock-disabled) [data-testid="ad-countdown"] {
   display: none !important;
 }

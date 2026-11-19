@@ -1,45 +1,45 @@
-ytd-enforcement-message-view-model,
-tp-yt-paper-dialog:has(ytd-enforcement-message-view-model),
-ytd-popup-container:has(ytd-enforcement-message-view-model),
-tp-yt-iron-overlay-backdrop,
-yt-playability-error-supported-renderers:has(ytd-enforcement-message-view-model),
-tp-yt-paper-toast#toast:has(a[href*="3037019"]),
-tp-yt-paper-toast#toast:has(a[href*="blocker"]),
-yt-notification-action-renderer:has(a[href*="3037019"]),
-yt-notification-action-renderer:has(a[href*="blocker"]),
-.paper-toast-open.yt-notification-action-renderer,
-tp-yt-paper-toast.ytd-popup-container {
+:root:not(.adblock-disabled) ytd-enforcement-message-view-model,
+:root:not(.adblock-disabled) tp-yt-paper-dialog:has(ytd-enforcement-message-view-model),
+:root:not(.adblock-disabled) ytd-popup-container:has(ytd-enforcement-message-view-model),
+:root:not(.adblock-disabled) tp-yt-iron-overlay-backdrop,
+:root:not(.adblock-disabled) yt-playability-error-supported-renderers:has(ytd-enforcement-message-view-model),
+:root:not(.adblock-disabled) tp-yt-paper-toast#toast:has(a[href*="3037019"]),
+:root:not(.adblock-disabled) tp-yt-paper-toast#toast:has(a[href*="blocker"]),
+:root:not(.adblock-disabled) yt-notification-action-renderer:has(a[href*="3037019"]),
+:root:not(.adblock-disabled) yt-notification-action-renderer:has(a[href*="blocker"]),
+:root:not(.adblock-disabled) .paper-toast-open.yt-notification-action-renderer,
+:root:not(.adblock-disabled) tp-yt-paper-toast.ytd-popup-container {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
 }
 
-#masthead-ad,
-ytd-banner-promo-renderer,
-ytd-promoted-sparkles-web-renderer,
-ytd-promoted-video-renderer,
-ytd-display-ad-renderer,
-ytd-companion-slot-renderer,
-ytd-statement-banner-renderer,
-ytd-ad-slot-renderer,
-ytd-in-feed-ad-layout-renderer,
-#player-ads,
-ytd-player-legacy-desktop-watch-ads-renderer,
-ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-ads"] {
+:root:not(.adblock-disabled) #masthead-ad,
+:root:not(.adblock-disabled) ytd-banner-promo-renderer,
+:root:not(.adblock-disabled) ytd-promoted-sparkles-web-renderer,
+:root:not(.adblock-disabled) ytd-promoted-video-renderer,
+:root:not(.adblock-disabled) ytd-display-ad-renderer,
+:root:not(.adblock-disabled) ytd-companion-slot-renderer,
+:root:not(.adblock-disabled) ytd-statement-banner-renderer,
+:root:not(.adblock-disabled) ytd-ad-slot-renderer,
+:root:not(.adblock-disabled) ytd-in-feed-ad-layout-renderer,
+:root:not(.adblock-disabled) #player-ads,
+:root:not(.adblock-disabled) ytd-player-legacy-desktop-watch-ads-renderer,
+:root:not(.adblock-disabled) ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-ads"] {
   display: none !important;
 }
 
-.ytp-ad-overlay-container,
-.ytp-ad-image-overlay,
-.ytp-ad-text-overlay,
-.ytp-ad-survey,
-.ytp-ad-message-container,
-.ytp-ad-action-interstitial,
-.ytp-ad-progress-list {
+:root:not(.adblock-disabled) .ytp-ad-overlay-container,
+:root:not(.adblock-disabled) .ytp-ad-image-overlay,
+:root:not(.adblock-disabled) .ytp-ad-text-overlay,
+:root:not(.adblock-disabled) .ytp-ad-survey,
+:root:not(.adblock-disabled) .ytp-ad-message-container,
+:root:not(.adblock-disabled) .ytp-ad-action-interstitial,
+:root:not(.adblock-disabled) .ytp-ad-progress-list {
   display: none !important;
 }
 
-ytd-reel-video-renderer:has(ytd-ad-slot-renderer) {
+:root:not(.adblock-disabled) ytd-reel-video-renderer:has(ytd-ad-slot-renderer) {
   display: none !important;
 }
