@@ -131,6 +131,12 @@ function detectActiveTab() {
 chrome.storage.local.get(['adblockEnabled', 'adblockCount', 'adblockCount_youtube', 'adblockCount_hotstar'], (result) => {
   const enabled = result.adblockEnabled !== false;
   renderState(enabled);
+  if (chrome.declarativeNetRequest && chrome.declarativeNetRequest.updateEnabledRulesets) {
+    chrome.declarativeNetRequest.updateEnabledRulesets({
+      enableRulesetIds: enabled ? ['ruleset_1'] : [],
+      disableRulesetIds: enabled ? [] : ['ruleset_1']
+    }).catch(() => {});
+  }
   updateMetrics({
     adblockCount: result.adblockCount || 0,
     adblockCount_youtube: result.adblockCount_youtube || 0,
@@ -163,6 +169,21 @@ toggle.addEventListener('change', () => {
       disableRulesetIds: enabled ? [] : ['ruleset_1']
     }).catch(() => {});
   }
+
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const activeTab = tabs && tabs[0];
+    if (!activeTab || !activeTab.id || !activeTab.url) return;
+    const url = activeTab.url.toLowerCase();
+    const isTarget = url.includes('youtube.com') ||
+                     url.includes('hotstar.com') ||
+                     url.includes('jiohotstar.com') ||
+                     url.includes('jiocinema.com');
+    if (isTarget) {
+      chrome.tabs.sendMessage(activeTab.id, { type: 'ADBLOCK_TOGGLE', enabled }, () => {
+        chrome.tabs.reload(activeTab.id);
+      });
+    }
+  });
 });
 
 if (reloadBtn) {

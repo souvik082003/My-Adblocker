@@ -2,10 +2,34 @@
   'use strict';
 
   let isEnabled = true;
+  try {
+    if (
+      (document.cookie && document.cookie.includes('__adblocker_disabled__=1')) ||
+      window.sessionStorage.getItem('__adblocker_disabled__') === 'true' ||
+      window.localStorage.getItem('__adblocker_disabled__') === 'true'
+    ) {
+      isEnabled = false;
+    }
+  } catch (_) {}
+
+  function updatePersistence(active) {
+    try {
+      if (!active) {
+        document.cookie = '__adblocker_disabled__=1; path=/; max-age=31536000';
+        window.sessionStorage.setItem('__adblocker_disabled__', 'true');
+        window.localStorage.setItem('__adblocker_disabled__', 'true');
+      } else {
+        document.cookie = '__adblocker_disabled__=; path=/; max-age=0';
+        window.sessionStorage.removeItem('__adblocker_disabled__');
+        window.localStorage.removeItem('__adblocker_disabled__');
+      }
+    } catch (_) {}
+  }
 
   window.addEventListener('message', (e) => {
     if (e.data && e.data.type === 'ADBLOCK_TOGGLE') {
       isEnabled = e.data.enabled !== false;
+      updatePersistence(isEnabled);
     }
   });
 
@@ -14,6 +38,15 @@
     if (document.documentElement && document.documentElement.dataset.adblockEnabled === 'false') {
       return false;
     }
+    try {
+      if (
+        (document.cookie && document.cookie.includes('__adblocker_disabled__=1')) ||
+        window.sessionStorage.getItem('__adblocker_disabled__') === 'true' ||
+        window.localStorage.getItem('__adblocker_disabled__') === 'true'
+      ) {
+        return false;
+      }
+    } catch (_) {}
     return true;
   }
 
@@ -45,18 +78,31 @@
     return obj;
   }
 
-  let currentYtInitialPlayerResponse = window.ytInitialPlayerResponse;
-  if (currentYtInitialPlayerResponse) {
-    pruneAdData(currentYtInitialPlayerResponse);
-  }
+  let originalYtInitialPlayerResponse = window.ytInitialPlayerResponse;
+  let currentYtInitialPlayerResponse = isAdblockActive() && originalYtInitialPlayerResponse
+    ? pruneAdData(originalYtInitialPlayerResponse)
+    : originalYtInitialPlayerResponse;
 
   try {
     Object.defineProperty(window, 'ytInitialPlayerResponse', {
       get() {
+        if (!isAdblockActive()) {
+          return originalYtInitialPlayerResponse || currentYtInitialPlayerResponse;
+        }
         return currentYtInitialPlayerResponse;
       },
       set(val) {
-        currentYtInitialPlayerResponse = pruneAdData(val);
+        originalYtInitialPlayerResponse = val;
+        if (isAdblockActive() && val && typeof val === 'object') {
+          try {
+            const clone = JSON.parse(JSON.stringify(val));
+            currentYtInitialPlayerResponse = pruneAdData(clone);
+          } catch (_) {
+            currentYtInitialPlayerResponse = pruneAdData(val);
+          }
+        } else {
+          currentYtInitialPlayerResponse = val;
+        }
       },
       configurable: true,
       enumerable: true
@@ -67,7 +113,7 @@
     const originalResponseJson = Response.prototype.json;
     Response.prototype.json = async function () {
       const data = await originalResponseJson.apply(this, arguments);
-      if (data && typeof data === 'object') {
+      if (isAdblockActive() && data && typeof data === 'object') {
         pruneAdData(data);
       }
       return data;
@@ -77,7 +123,7 @@
   const originalJSONParse = JSON.parse;
   JSON.parse = function (...args) {
     const result = originalJSONParse.apply(this, args);
-    if (result && typeof result === 'object') {
+    if (isAdblockActive() && result && typeof result === 'object') {
       pruneAdData(result);
     }
     return result;
@@ -88,7 +134,7 @@
       cfg.__adblockHooked = true;
       const originalSet = cfg.set;
       cfg.set = function (keyOrObj, val) {
-        if (keyOrObj && typeof keyOrObj === 'object') {
+        if (isAdblockActive() && keyOrObj && typeof keyOrObj === 'object') {
           pruneAdData(keyOrObj);
         }
         return originalSet.apply(this, arguments);

@@ -2,6 +2,20 @@
   'use strict';
 
   let enabled = true;
+  try {
+    if (
+      (document.cookie && document.cookie.includes('__adblocker_disabled__=1')) ||
+      window.sessionStorage.getItem('__adblocker_disabled__') === 'true' ||
+      window.localStorage.getItem('__adblocker_disabled__') === 'true'
+    ) {
+      enabled = false;
+      if (document.documentElement) {
+        document.documentElement.classList.add('adblock-disabled');
+        document.documentElement.dataset.adblockEnabled = 'false';
+      }
+    }
+  } catch (_) {}
+
   let isAdActive = false;
   let adCounted = false;
   let userPlaybackRate = 1.0;
@@ -9,6 +23,18 @@
 
   function syncEnabled(state) {
     enabled = state !== false;
+    try {
+      if (!enabled) {
+        document.cookie = '__adblocker_disabled__=1; path=/; max-age=31536000';
+        window.sessionStorage.setItem('__adblocker_disabled__', 'true');
+        window.localStorage.setItem('__adblocker_disabled__', 'true');
+      } else {
+        document.cookie = '__adblocker_disabled__=; path=/; max-age=0';
+        window.sessionStorage.removeItem('__adblocker_disabled__');
+        window.localStorage.removeItem('__adblocker_disabled__');
+      }
+    } catch (_) {}
+
     if (document.documentElement) {
       document.documentElement.classList.toggle('adblock-disabled', !enabled);
       document.documentElement.dataset.adblockEnabled = String(enabled);
@@ -31,6 +57,13 @@
   chrome.storage.onChanged.addListener((changes) => {
     if (changes.adblockEnabled) {
       syncEnabled(changes.adblockEnabled.newValue);
+    }
+  });
+
+  chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+    if (msg && msg.type === 'ADBLOCK_TOGGLE') {
+      syncEnabled(msg.enabled);
+      sendResponse({ success: true, enabled: msg.enabled });
     }
   });
 
