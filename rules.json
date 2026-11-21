@@ -44,19 +44,5 @@
         "sub_frame"
       ]
     }
-  },
-  {
-    "id": 4,
-    "priority": 1,
-    "action": {
-      "type": "block"
-    },
-    "condition": {
-      "urlFilter": "||youtube.com/ptracking",
-      "resourceTypes": [
-        "xmlhttprequest",
-        "image"
-      ]
-    }
   }
 ]

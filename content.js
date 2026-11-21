@@ -163,19 +163,8 @@
 
   function isAdShowing() {
     const player = document.querySelector('#movie_player, .html5-video-player');
-    if (player) {
-      if (
-        player.classList.contains('ad-showing') ||
-        player.classList.contains('ad-interrupting')
-      ) {
-        return true;
-      }
-    }
-    const adOverlay = document.querySelector('.ytp-ad-player-overlay-layout');
-    if (adOverlay && adOverlay.offsetParent !== null) {
-      return true;
-    }
-    return false;
+    if (!player) return false;
+    return player.classList.contains('ad-showing') || player.classList.contains('ad-interrupting');
   }
 
   function handleAntiAdblockDetection() {
@@ -338,28 +327,55 @@
       video.addEventListener('loadedmetadata', () => {
         if (isAdShowing()) {
           processAds();
-        } else if (video.playbackRate !== userPlaybackRate) {
-          video.playbackRate = userPlaybackRate;
+        } else {
+          if (video.playbackRate !== userPlaybackRate) {
+            video.playbackRate = userPlaybackRate;
+          }
+          if (video.paused && !video.ended && !video.__userPaused) {
+            video.play().catch(() => {});
+          }
+        }
+      });
+      video.addEventListener('canplay', () => {
+        if (!isAdShowing() && video.paused && !video.ended && !video.__userPaused) {
+          video.play().catch(() => {});
         }
       });
       video.addEventListener('play', () => {
+        video.__userPaused = false;
         if (isAdShowing()) processAds();
+      });
+      video.addEventListener('pause', (e) => {
+        if (e.isTrusted && !isAdShowing() && video.currentTime > 0.5) {
+          video.__userPaused = true;
+        }
       });
     }
   }
+
+  const resumePlayback = () => {
+    const video = document.querySelector('video.html5-main-video') || document.querySelector('video');
+    if (video) {
+      video.__userPaused = false;
+      if (!isAdShowing()) {
+        if (video.playbackRate !== userPlaybackRate) {
+          video.playbackRate = userPlaybackRate;
+        }
+        if (video.paused && !video.ended) {
+          video.play().catch(() => {});
+        }
+      }
+    }
+  };
 
   window.addEventListener('yt-navigate-finish', () => {
     isAdActive = false;
     adCounted = false;
     attachVideoListeners();
 
-    const video = document.querySelector('video.html5-main-video') || document.querySelector('video');
-    if (video) {
-      video.playbackRate = userPlaybackRate;
-      if (video.paused && !video.ended) {
-        video.play().catch(() => {});
-      }
-    }
+    setTimeout(resumePlayback, 100);
+    setTimeout(resumePlayback, 300);
+    setTimeout(resumePlayback, 600);
     processAds();
   });
 
@@ -369,5 +385,8 @@
 
   processAds();
   attachVideoListeners();
+  setTimeout(resumePlayback, 200);
+  setTimeout(resumePlayback, 500);
+  setTimeout(resumePlayback, 1000);
   setInterval(processAds, 100);
 })();
