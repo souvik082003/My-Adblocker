@@ -9,3 +9,11 @@
 :root:not(.adblock-disabled) [data-testid="ad-countdown"] {
   display: none !important;
 }
+
+:root:not(.adblock-disabled) #ad-video-container,
+:root:not(.adblock-disabled) [data-testid="ad-video-container"],
+:root:not(.adblock-disabled) .ad-video-container,
+:root:not(.adblock-disabled) .ad-container {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
