@@ -281,13 +281,6 @@
           userPlaybackRate = video.playbackRate;
         }
         userMuted = video.muted;
-
-        if (video.paused && !video.ended && video.currentTime > 0) {
-          const hasInterruption = document.querySelector('tp-yt-paper-toast#toast, yt-notification-action-renderer');
-          if (hasInterruption) {
-            video.play().catch(() => {});
-          }
-        }
       }
     }
 
@@ -327,55 +320,20 @@
       video.addEventListener('loadedmetadata', () => {
         if (isAdShowing()) {
           processAds();
-        } else {
-          if (video.playbackRate !== userPlaybackRate) {
-            video.playbackRate = userPlaybackRate;
-          }
-          if (video.paused && !video.ended && !video.__userPaused) {
-            video.play().catch(() => {});
-          }
-        }
-      });
-      video.addEventListener('canplay', () => {
-        if (!isAdShowing() && video.paused && !video.ended && !video.__userPaused) {
-          video.play().catch(() => {});
+        } else if (video.playbackRate !== userPlaybackRate) {
+          video.playbackRate = userPlaybackRate;
         }
       });
       video.addEventListener('play', () => {
-        video.__userPaused = false;
         if (isAdShowing()) processAds();
-      });
-      video.addEventListener('pause', (e) => {
-        if (e.isTrusted && !isAdShowing() && video.currentTime > 0.5) {
-          video.__userPaused = true;
-        }
       });
     }
   }
-
-  const resumePlayback = () => {
-    const video = document.querySelector('video.html5-main-video') || document.querySelector('video');
-    if (video) {
-      video.__userPaused = false;
-      if (!isAdShowing()) {
-        if (video.playbackRate !== userPlaybackRate) {
-          video.playbackRate = userPlaybackRate;
-        }
-        if (video.paused && !video.ended) {
-          video.play().catch(() => {});
-        }
-      }
-    }
-  };
 
   window.addEventListener('yt-navigate-finish', () => {
     isAdActive = false;
     adCounted = false;
     attachVideoListeners();
-
-    setTimeout(resumePlayback, 100);
-    setTimeout(resumePlayback, 300);
-    setTimeout(resumePlayback, 600);
     processAds();
   });
 
@@ -385,8 +343,5 @@
 
   processAds();
   attachVideoListeners();
-  setTimeout(resumePlayback, 200);
-  setTimeout(resumePlayback, 500);
-  setTimeout(resumePlayback, 1000);
   setInterval(processAds, 100);
 })();
