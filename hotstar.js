@@ -18,6 +18,7 @@
 
   let adCounted = false;
   let userMutedState = false;
+  let wasAdActive = false;
 
   function syncEnabled(state) {
     enabled = state !== false;
@@ -253,6 +254,7 @@
     const adShowing = isHotstarAdShowing();
 
     if (adShowing) {
+      wasAdActive = true;
       if (!adCounted) {
         adCounted = true;
         incrementBlockCount(1);
@@ -308,10 +310,14 @@
           mv.playbackRate = 1.0;
         }
 
-        if (mv.paused && !mv.ended && !mv.__userPaused) {
-          mv.play().catch(() => {});
+        if (wasAdActive) {
+          if (mv.paused && !mv.ended) {
+            mv.play().catch(() => {});
+          }
         }
       }
+
+      wasAdActive = false;
     }
   }
 
@@ -329,20 +335,6 @@
         e.target.__userMuted = e.target.muted;
         userMutedState = e.target.muted;
       }
-    }
-  }, true);
-
-  document.addEventListener('pause', (e) => {
-    if (e.isTrusted && e.target instanceof HTMLVideoElement && !isBillboardVideo(e.target)) {
-      if (!isHotstarAdShowing() && e.target.currentTime > 0.5) {
-        e.target.__userPaused = true;
-      }
-    }
-  }, true);
-
-  document.addEventListener('play', (e) => {
-    if (e.target instanceof HTMLVideoElement && !isBillboardVideo(e.target)) {
-      e.target.__userPaused = false;
     }
   }, true);
 
