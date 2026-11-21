@@ -188,10 +188,10 @@
     '[data-testid="ad-skip-button"]',
     'button.ad-skip',
     '.skip-ad-button',
-    'button[aria-label*="skip" i]',
-    'button[class*="skip" i]',
-    '[class*="skip-ad"]',
-    '[class*="ad-skip"]'
+    'button[class*="skip-ad" i]',
+    'button[class*="ad-skip" i]',
+    'button[aria-label*="skip ad" i]',
+    'button[aria-label*="skip advertisement" i]'
   ];
 
   const AD_INDICATOR_SELECTORS = [
@@ -199,18 +199,36 @@
     '.ad-timer',
     '[data-testid="ad-countdown"]',
     '.ad-countdown',
+    '[data-testid="ad-slug"]',
     '[data-testid="ad-badge"]',
     '.ad-badge',
-    '[data-testid="ad-slug"]',
-    '.ad-indicator',
-    '[class*="ad-timer"]',
-    '[class*="ad-badge"]'
+    '[class*="ad-timer"]'
   ];
 
   function getActiveSkipButton() {
     for (const sel of SKIP_SELECTORS) {
       const btn = document.querySelector(sel);
       if (btn && btn.offsetParent !== null) {
+        const label = (btn.getAttribute('aria-label') || '').toLowerCase();
+        const text = (btn.textContent || '').toLowerCase().trim();
+        if (
+          label.includes('intro') ||
+          label.includes('recap') ||
+          label.includes('10') ||
+          label.includes('forward') ||
+          label.includes('backward') ||
+          label.includes('next')
+        ) {
+          continue;
+        }
+        if (
+          text.includes('intro') ||
+          text.includes('recap') ||
+          text.includes('10s') ||
+          text.includes('next episode')
+        ) {
+          continue;
+        }
         return btn;
       }
     }
@@ -221,7 +239,20 @@
     for (const sel of AD_INDICATOR_SELECTORS) {
       const el = document.querySelector(sel);
       if (el && el.offsetParent !== null) {
-        return true;
+        const text = (el.textContent || '').toLowerCase();
+        const testId = (el.getAttribute('data-testid') || '').toLowerCase();
+        if (testId.includes('timer') || testId.includes('countdown') || testId.includes('slug')) {
+          return true;
+        }
+        if (
+          text.includes('ad ') ||
+          text.includes('ad·') ||
+          text.includes('ad:') ||
+          text.includes('advertisement') ||
+          text.includes('ads')
+        ) {
+          return true;
+        }
       }
     }
     return false;
@@ -235,7 +266,9 @@
   function isHotstarAdShowing() {
     if (getActiveSkipButton()) return true;
     if (isAdIndicatorPresent()) return true;
-    const explicitAdContainer = document.querySelector('#ad-video-container, .ad-video-container, [data-testid="ad-video-container"]');
+    const explicitAdContainer = document.querySelector(
+      '#ad-video-container, .ad-video-container, [data-testid="ad-video-container"]'
+    );
     if (explicitAdContainer && explicitAdContainer.offsetParent !== null) {
       const v = explicitAdContainer.querySelector('video');
       if (v) return true;
@@ -260,8 +293,12 @@
         incrementBlockCount(1);
       }
 
-      const explicitAdContainer = document.querySelector('#ad-video-container, .ad-video-container, [data-testid="ad-video-container"]');
-      const adVideos = explicitAdContainer ? explicitAdContainer.querySelectorAll('video') : document.querySelectorAll('video');
+      const explicitAdContainer = document.querySelector(
+        '#ad-video-container, .ad-video-container, [data-testid="ad-video-container"]'
+      );
+      const adVideos = explicitAdContainer
+        ? explicitAdContainer.querySelectorAll('video')
+        : document.querySelectorAll('video');
 
       for (const video of adVideos) {
         if (isBillboardVideo(video)) continue;
@@ -270,7 +307,12 @@
         video.playbackRate = 16.0;
 
         const duration = video.duration;
-        if (Number.isFinite(duration) && duration > 0 && duration <= 180 && !(video.ended || video.currentTime >= duration)) {
+        if (
+          Number.isFinite(duration) &&
+          duration > 0 &&
+          duration <= 180 &&
+          !(video.ended || video.currentTime >= duration)
+        ) {
           try {
             if (video.buffered && video.buffered.length > 0) {
               const bufEnd = video.buffered.end(video.buffered.length - 1);
@@ -285,10 +327,6 @@
             video.dispatchEvent(new Event('ended'));
           } catch (_) {}
         }
-
-        if (video.paused && !video.ended) {
-          video.play().catch(() => {});
-        }
       }
 
       const postSkipBtn = getActiveSkipButton();
@@ -302,18 +340,12 @@
       for (const mv of allVideos) {
         if (isBillboardVideo(mv) || isExplicitAdContainer(mv)) continue;
 
-        if (mv.muted && !mv.__userMuted && !userMutedState) {
+        if (mv.muted && !userMutedState) {
           mv.muted = false;
         }
 
         if (mv.playbackRate > 4.0) {
           mv.playbackRate = 1.0;
-        }
-
-        if (wasAdActive) {
-          if (mv.paused && !mv.ended) {
-            mv.play().catch(() => {});
-          }
         }
       }
 
@@ -329,14 +361,52 @@
     }
   }
 
-  document.addEventListener('volumechange', (e) => {
-    if (e.isTrusted && e.target instanceof HTMLVideoElement && !isBillboardVideo(e.target)) {
-      if (!isHotstarAdShowing()) {
-        e.target.__userMuted = e.target.muted;
-        userMutedState = e.target.muted;
+  document.addEventListener(
+    'volumechange',
+    (e) => {
+      if (e.isTrusted && e.target instanceof HTMLVideoElement && !isBillboardVideo(e.target)) {
+        if (!isHotstarAdShowing()) {
+          userMutedState = e.target.muted;
+        }
       }
-    }
-  }, true);
+    },
+    true
+  );
+
+  window.addEventListener(
+    'keydown',
+    (e) => {
+      if (e.code === 'Space' || e.key === ' ' || e.keyCode === 32) {
+        const active = document.activeElement;
+        if (active) {
+          const tag = active.tagName ? active.tagName.toLowerCase() : '';
+          if (tag === 'input' || tag === 'textarea' || active.isContentEditable) {
+            return;
+          }
+          if (active.getAttribute && active.getAttribute('role') === 'textbox') {
+            return;
+          }
+        }
+        const video = document.querySelector('video:not([data-testid="bbtype-video"] video)');
+        if (video && !isBillboardVideo(video) && !isHotstarAdShowing()) {
+          const isInPlayer =
+            active &&
+            (active === video ||
+              (typeof active.closest === 'function' &&
+                active.closest('[data-testid="player-container"], .player-container, #player, .video-player')));
+          if (!isInPlayer) {
+            e.preventDefault();
+            if (video.paused) {
+              video.play().catch(() => {});
+            } else {
+              video.pause();
+            }
+          }
+        }
+      }
+    },
+    true
+  );
 
   const observer = new MutationObserver((mutations) => {
     let hasAdChange = false;
@@ -349,7 +419,7 @@
             pendingNodes.add(node);
             const id = node.id || '';
             const cls = typeof node.className === 'string' ? node.className : '';
-            const testId = typeof node.getAttribute === 'function' ? (node.getAttribute('data-testid') || '') : '';
+            const testId = typeof node.getAttribute === 'function' ? node.getAttribute('data-testid') || '' : '';
             if (
               id === 'ad-video-container' ||
               cls.includes('ad-video') ||
