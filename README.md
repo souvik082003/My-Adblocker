@@ -156,3 +156,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 63**: Zero layout shift CSS rules for Hotstar promotional banners.
 - **Update 64**: Static network rule 1: googlesyndication.com script blocking.
 - **Update 65**: Static network rule 2: doubleclick.net multi-resource blocking.
+- **Update 66**: Static network rule 3: googleadservices.com request blocking.
