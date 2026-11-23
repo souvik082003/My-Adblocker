@@ -89,3 +89,6 @@ This project is created strictly for **personal educational and research purpose
 - Chromium Manifest V3 architectures and declarative network filtering.
 - Single Page Application (SPA) lifecycle hooks and DOM MutationObserver efficiency.
 - HTML5 `<video>` API manipulation, buffered range inspection, and pointer event simulation.
+
+## Documentation & Build Notes
+- **Update 1**: Manifest V3 core configuration & schema declarations.
