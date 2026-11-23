@@ -92,3 +92,4 @@ This project is created strictly for **personal educational and research purpose
 
 ## Documentation & Build Notes
 - **Update 1**: Manifest V3 core configuration & schema declarations.
+- **Update 2**: Declarative net request rule sets compilation & priority mapping.
