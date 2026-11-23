@@ -160,3 +160,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 67**: Declarative ruleset enabling and disabling synchronization.
 - **Update 68**: Popup glassmorphic card styling and OLED dark background.
 - **Update 69**: Popup brand header with 32px icon and version badge.
+- **Update 70**: Real-time shield status indicator dot and glow animations.
