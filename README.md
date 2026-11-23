@@ -165,3 +165,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 72**: Platform specific indicator pills with active/pause states.
 - **Update 73**: Site-specific ad blocked counter computation and display.
 - **Update 74**: Total accumulated ad block counter formatting.
+- **Update 75**: Estimated saved watch time calculation logic.
