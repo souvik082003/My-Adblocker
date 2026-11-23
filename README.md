@@ -127,3 +127,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 34**: HTML5 video element acquisition and validation.
 - **Update 35**: In-stream advertisement state detection via ad-showing class.
 - **Update 36**: In-stream advertisement state detection via ad-interrupting class.
+- **Update 37**: Instant 16x video acceleration on active ad playback.
