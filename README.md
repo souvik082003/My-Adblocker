@@ -108,3 +108,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 15**: JSON.parse global prototype hooking with ad pruning guards.
 - **Update 16**: Response.prototype.json hooking for youtubei/v1/player endpoints.
 - **Update 17**: ytcfg global object observer and ad configuration stripping.
+- **Update 18**: Safe suppression of enforcementMessageViewModel dialogs.
