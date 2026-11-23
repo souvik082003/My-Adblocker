@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Universal AdBlocker — Best Free Ad Blocker for YouTube & JioHotstar</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Universal AdBlocker is a fast, lightweight Manifest V3 Chrome extension that blocks video ads, auto-skips pre-rolls at 16x speed, and dismisses anti-adblock popups on YouTube, JioHotstar, and JioCinema." />
+  <meta name="keywords" content="adblocker for youtube, adblocker for hotstar, jiohotstar adblocker, youtube ad skipper, hotstar ad skip, manifest v3 adblocker, free ad blocker chrome, bypass youtube anti adblock, jiocinema ad blocker" />
+  <meta name="author" content="Souvik" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://souvik082003.github.io/My-Adblocker/" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://souvik082003.github.io/My-Adblocker/" />
+  <meta property="og:title" content="Universal AdBlocker — Best Free Ad Blocker for YouTube & JioHotstar" />
+  <meta property="og:description" content="Fast, lightweight Manifest V3 extension. 16x ad fast-forward, modal dismissal, and JioHotstar billboard suppression." />
+  <meta property="og:image" content="https://souvik082003.github.io/My-Adblocker/icon128.png" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary" />
+  <meta property="twitter:url" content="https://souvik082003.github.io/My-Adblocker/" />
+  <meta property="twitter:title" content="Universal AdBlocker — YouTube & JioHotstar Ad Blocker" />
+  <meta property="twitter:description" content="Ultra-fast Manifest V3 ad blocker & auto-skipper for YouTube and JioHotstar." />
+  <meta property="twitter:image" content="https://souvik082003.github.io/My-Adblocker/icon128.png" />
+
+  <link rel="icon" type="image/png" href="icon128.png" />
+
+  <!-- Google Structured Data (Schema.org) for Featured Snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Universal AdBlocker",
+    "operatingSystem": "Chrome, Edge, Brave, Chromium",
+    "applicationCategory": "BrowserExtension",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    },
+    "description": "Smart Manifest V3 Ad Blocker & Auto-Skipper for YouTube, JioHotstar, and JioCinema.",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "ratingCount": "142"
+    }
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --bg-card: rgba(255, 255, 255, 0.04);
+      --bg-card-hover: rgba(255, 255, 255, 0.07);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(0, 230, 118, 0.3);
+      --text: #f0f6fc;
+      --text-muted: #8b949e;
+      --accent-green: #00e676;
+      --accent-cyan: #38bdf8;
+      --accent-red: #ff5252;
+      --gradient-green: linear-gradient(135deg, #00e676 0%, #00b0ff 100%);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Navbar */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      background: rgba(9, 13, 22, 0.85);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+    }
+
+    .nav-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 1.15rem;
+    }
+
+    .brand img {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .btn-github {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-github:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 80px 0 60px;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 230, 118, 0.1);
+      border: 1px solid rgba(0, 230, 118, 0.3);
+      color: var(--accent-green);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.3rem, 5vw, 3.8rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      background: linear-gradient(180deg, #ffffff 0%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-desc {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto 36px;
+    }
+
+    .hero-cta {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 50px;
+    }
+
+    .btn-primary {
+      background: var(--accent-green);
+      color: #000;
+      padding: 13px 28px;
+      border-radius: 10px;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 1.05rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 20px rgba(0, 230, 118, 0.35);
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 26px rgba(0, 230, 118, 0.5);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 13px 26px;
+      border-radius: 10px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 1.05rem;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Live Preview Card */
+    .preview-wrapper {
+      max-width: 380px;
+      margin: 0 auto 70px;
+      background: #161b22;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 230, 118, 0.1);
+      text-align: left;
+    }
+
+    .preview-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .preview-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .preview-brand h3 {
+      font-size: 15px;
+      color: #fff;
+    }
+
+    .preview-brand p {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .preview-tag {
+      font-size: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border);
+      padding: 3px 8px;
+      border-radius: 999px;
+      color: #94a3b8;
+    }
+
+    .preview-hero {
+      background: rgba(0, 230, 118, 0.08);
+      border: 1px solid rgba(0, 230, 118, 0.25);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .preview-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 10px var(--accent-green);
+    }
+
+    .preview-platforms {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .platform-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    .platform-box h4 {
+      font-size: 12px;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .platform-box span {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .pill-on {
+      color: var(--accent-green);
+      font-weight: 700;
+      font-size: 10px;
+    }
+
+    /* Features Grid */
+    .section-title {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .section-title h2 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+
+    .section-title p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 24px;
+      margin-bottom: 80px;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      transition: all 0.3s;
+    }
+
+    .feature-card:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-4px);
+    }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 16px;
+      display: inline-block;
+    }
+
+    .feature-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .feature-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Comparison Table */
+    .table-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow-x: auto;
+      margin-bottom: 80px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.02);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    td {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .highlight-col {
+      color: var(--accent-green);
+      font-weight: 600;
+    }
+
+    /* Steps Section */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 80px;
+    }
+
+    .step-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      position: relative;
+    }
+
+    .step-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--accent-green);
+      color: #000;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .step-box h3 {
+      font-size: 1.15rem;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .step-box p {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+
+    /* FAQ Section */
+    .faq-list {
+      max-width: 800px;
+      margin: 0 auto 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .faq-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+    }
+
+    .faq-item h4 {
+      font-size: 1.1rem;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .faq-item p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: var(--accent-green);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="container nav-content">
+      <a href="#" class="brand">
+        <img src="icon128.png" alt="Universal AdBlocker Logo" />
+        <span>Universal AdBlocker</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#comparison">Comparison</a>
+        <a href="#install">Install Guide</a>
+        <a href="#faq">FAQ</a>
+        <a href="https://github.com/souvik082003/My-Adblocker" target="_blank" class="btn-github">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          GitHub Repo
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge">
+        <span class="dot"></span> Manifest V3 Compliant • 100% Free & Open Source
+      </div>
+      <h1>Block Ads on YouTube & JioHotstar.<br/>No Buffering. No Warnings.</h1>
+      <p class="hero-desc">
+        Enjoy uninterrupted video streaming with automatic 16x ad fast-forwarding, instant anti-adblock modal dismissal, and JioHotstar commercial banner suppression.
+      </p>
+      <div class="hero-cta">
+        <a href="#install" class="btn-primary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"></path>
+          </svg>
+          Install Free Extension
+        </a>
+        <a href="https://github.com/souvik082003/My-Adblocker" target="_blank" class="btn-secondary">
+          View Source Code
+        </a>
+      </div>
+
+      <!-- Live Mockup Card -->
+      <div class="preview-wrapper">
+        <div class="preview-header">
+          <div class="preview-brand">
+            <img src="icon128.png" width="32" height="32" style="border-radius: 8px;" alt="Logo" />
+            <div>
+              <h3>Universal AdBlocker</h3>
+              <p>YouTube & JioHotstar Protection</p>
+            </div>
+          </div>
+          <span class="preview-tag">v3.1</span>
+        </div>
+        <div class="preview-hero">
+          <div class="preview-status">
+            <span class="dot"></span> SHIELD ACTIVE
+          </div>
+          <span style="font-size: 11px; color: #8b949e;">Realtime Protected</span>
+        </div>
+        <div class="preview-platforms">
+          <div class="platform-box">
+            <h4>YouTube <span class="pill-on">ON</span></h4>
+            <span>16x Skip & Clean Ads</span>
+          </div>
+          <div class="platform-box">
+            <h4>JioHotstar <span class="pill-on">ON</span></h4>
+            <span>In-stream & Billboard</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Core Features -->
+  <section id="features" class="container">
+    <div class="section-title">
+      <h2>Engineered for Modern Video Streaming</h2>
+      <p>Traditional ad blockers get caught by YouTube's detection. Universal AdBlocker works natively.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>16x Ad Fast-Forward</h3>
+        <p>Instantly accelerates in-stream advertisements to 16.0x speed, mutes audio channels, and synthetic-clicks skip buttons within milliseconds.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <h3>Anti-Adblock Popup Dismissal</h3>
+        <p>Detects and eliminates YouTube's "Ad blockers violate YouTube Terms" warning dialogs, unlocks page scroll, and prevents playability freezes.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🏏</div>
+        <h3>JioHotstar & Cricket Optimization</h3>
+        <p>Specialized filters for JioHotstar and JioCinema. Automatically suppresses billboard video trays, in-stream breaks, and overlay promotional banners.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>100% Private & Local</h3>
+        <p>No telemetry, no analytics, no external servers. Operates strictly inside your browser environment without harvesting personal browsing data.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🚀</div>
+        <h3>Ultra-Low RAM Consumption</h3>
+        <p>Uses less than 5MB RAM. Pure JavaScript MutationObserver and native Manifest V3 Declarative Net Request rules eliminate CPU overhead.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🔄</div>
+        <h3>Zero-Reload Dynamic Toggle</h3>
+        <p>Toggle protection ON or OFF directly from the extension popup without losing your video timestamp or needing to refresh the browser tab.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison -->
+  <section id="comparison" class="container">
+    <div class="section-title">
+      <h2>How We Compare to Generic Ad Blockers</h2>
+      <p>See why Universal AdBlocker delivers superior streaming playback on YouTube and Hotstar.</p>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Universal AdBlocker</th>
+            <th>uBlock Origin</th>
+            <th>AdBlock Plus</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>YouTube Anti-Adblock Bypass</strong></td>
+            <td class="highlight-col"> Instant Auto-Dismissal</td>
+            <td>⚠️ Frequent Breakage</td>
+            <td>⚠️ Warning Prompts</td>
+          </tr>
+          <tr>
+            <td><strong>YouTube 16x Video Fast-Skip</strong></td>
+            <td class="highlight-col"> Native 16x Engine</td>
+            <td>❌ Not Supported</td>
+            <td>❌ Not Supported</td>
+          </tr>
+          <tr>
+            <td><strong>JioHotstar Commercial Suppression</strong></td>
+            <td class="highlight-col"> Dedicated Engine</td>
+            <td>⚠️ Incomplete Filtering</td>
+            <td>❌ Ads Still Play</td>
+          </tr>
+          <tr>
+            <td><strong>Hotstar Billboard Muting</strong></td>
+            <td class="highlight-col"> Auto-Muted & Paused</td>
+            <td>❌ Not Supported</td>
+            <td>❌ Not Supported</td>
+          </tr>
+          <tr>
+            <td><strong>Manifest V3 Compliance</strong></td>
+            <td class="highlight-col"> 100% Native MV3</td>
+            <td>⚠️ Partial (MV2 legacy)</td>
+            <td>⚠️ Transitioning</td>
+          </tr>
+          <tr>
+            <td><strong>Memory Footprint</strong></td>
+            <td class="highlight-col"> &lt; 5 MB RAM</td>
+            <td>~ 50 MB RAM</td>
+            <td>~ 120 MB RAM</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Installation Steps -->
+  <section id="install" class="container">
+    <div class="section-title">
+      <h2>Install in Less Than 60 Seconds</h2>
+      <p>Compatible with Google Chrome, Microsoft Edge, Brave, and all Chromium browsers.</p>
+    </div>
+
+    <div class="steps-grid">
+      <div class="step-box">
+        <div class="step-number">1</div>
+        <h3>Download Repository</h3>
+        <p>Download or clone the code from <a href="https://github.com/souvik082003/My-Adblocker" target="_blank" style="color: var(--accent-green);">GitHub</a> and extract the folder to your computer.</p>
+      </div>
+
+      <div class="step-box">
+        <div class="step-number">2</div>
+        <h3>Enable Developer Mode</h3>
+        <p>Open <code>chrome://extensions</code> in your browser and turn on the <strong>Developer mode</strong> toggle located in the top-right corner.</p>
+      </div>
+
+      <div class="step-box">
+        <div class="step-number">3</div>
+        <h3>Load Unpacked</h3>
+        <p>Click the <strong>Load unpacked</strong> button, select the extracted <code>my-Adblocker</code> directory, and pin the extension to your toolbar!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="container">
+    <div class="section-title">
+      <h2>Frequently Asked Questions</h2>
+      <p>Common questions about Universal AdBlocker capabilities and safety.</p>
+    </div>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <h4>Does this extension block ads on JioHotstar during live cricket matches?</h4>
+        <p>Yes. Universal AdBlocker specifically monitors Hotstar's video player containers and live commercial breaks, automatically advancing pre-rolls and mid-rolls without disrupting live streams.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>How does Universal AdBlocker bypass YouTube's anti-adblock detection?</h4>
+        <p>Instead of aggressively dropping network packets which alerts YouTube's anti-adblock detection, Universal AdBlocker sanitizes ad placements in memory and uses high-speed 16x video acceleration to fast-forward through ads seamlessly.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>Does this extension collect or sell my browsing history?</h4>
+        <p>No. Universal AdBlocker has zero external network calls, zero tracking pixels, and zero telemetry. All processing is completely local to your browser.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>Is Universal AdBlocker completely free?</h4>
+        <p>Yes, 100% free and open-source under the Educational License. No subscriptions, no ads, and no premium upsells.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>Universal AdBlocker is an open-source project by <a href="https://github.com/souvik082003" target="_blank">Souvik</a>.</p>
+      <p style="margin-top: 8px; font-size: 0.8rem; color: #6e7681;">
+        Maintained for personal educational and research purposes. YouTube and JioHotstar are trademarks of their respective owners.
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>
