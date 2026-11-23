@@ -132,3 +132,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 39**: Buffered range checking to prevent seeking beyond loaded chunks.
 - **Update 40**: Synthetic ended event triggering for instant ad completion.
 - **Update 41**: User playback rate preservation before ad acceleration.
+- **Update 42**: User audio volume and mute state restoration after ad completion.
