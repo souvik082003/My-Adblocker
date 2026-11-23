@@ -97,3 +97,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 4**: Host permissions scoped strictly to streaming endpoints.
 - **Update 5**: Service worker registration replaced with lean declarative hooks.
 - **Update 6**: Web accessible resources minimized for security isolation.
+- **Update 7**: MAIN world execution timing for inject.js set to document_start.
