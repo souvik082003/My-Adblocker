@@ -105,3 +105,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 12**: Clean adPlacements stripping logic in player response objects.
 - **Update 13**: Recursive playerResponse ad parameter sanitization.
 - **Update 14**: Window.ytInitialPlayerResponse getter/setter property definition.
+- **Update 15**: JSON.parse global prototype hooking with ad pruning guards.
