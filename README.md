@@ -418,3 +418,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 326**: DNR rule compilation cache check (Cycle 12).
 - **Update 327**: YouTube Shorts navigation listener test (Cycle 12).
 - **Update 328**: JioHotstar billboard muting assertion (Cycle 12).
+- **Update 329**: Anti-adblock dialog auto-dismissal check (Cycle 12).
