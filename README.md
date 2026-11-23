@@ -109,3 +109,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 16**: Response.prototype.json hooking for youtubei/v1/player endpoints.
 - **Update 17**: ytcfg global object observer and ad configuration stripping.
 - **Update 18**: Safe suppression of enforcementMessageViewModel dialogs.
+- **Update 19**: Cross-world postMessage event dispatching for blocked ad counters.
