@@ -98,3 +98,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 5**: Service worker registration replaced with lean declarative hooks.
 - **Update 6**: Web accessible resources minimized for security isolation.
 - **Update 7**: MAIN world execution timing for inject.js set to document_start.
+- **Update 8**: Isolated world content script bindings for YouTube.
