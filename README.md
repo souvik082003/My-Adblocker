@@ -177,3 +177,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 84**: Cleanup of googlevideo.com header modification rules.
 - **Update 85**: Memory leak prevention on long-running tab sessions.
 - **Update 86**: Garbage collection friendly storage access patterns.
+- **Update 87**: High-DPI icon asset packaging (16px, 32px, 48px, 128px).
