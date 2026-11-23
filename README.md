@@ -130,3 +130,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 37**: Instant 16x video acceleration on active ad playback.
 - **Update 38**: Instant muting of audio channels during ad playback.
 - **Update 39**: Buffered range checking to prevent seeking beyond loaded chunks.
+- **Update 40**: Synthetic ended event triggering for instant ad completion.
