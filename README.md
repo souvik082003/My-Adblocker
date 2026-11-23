@@ -112,3 +112,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 19**: Cross-world postMessage event dispatching for blocked ad counters.
 - **Update 20**: Debounced counter persistence in chrome.storage.local.
 - **Update 21**: Separate tracking counters for YouTube and JioHotstar.
+- **Update 22**: Storage change listeners for seamless multi-tab state sync.
