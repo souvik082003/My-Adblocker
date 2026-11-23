@@ -159,3 +159,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 66**: Static network rule 3: googleadservices.com request blocking.
 - **Update 67**: Declarative ruleset enabling and disabling synchronization.
 - **Update 68**: Popup glassmorphic card styling and OLED dark background.
+- **Update 69**: Popup brand header with 32px icon and version badge.
