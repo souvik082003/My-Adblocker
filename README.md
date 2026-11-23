@@ -122,3 +122,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 29**: Legacy .videoAdUiSkipButton compatibility checks.
 - **Update 30**: Modern ytp-ad-skip-button-modern element selection.
 - **Update 31**: Nested ytd-button-renderer skip button slot resolution.
+- **Update 32**: Close button simulation for overlay and banner advertisements.
