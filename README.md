@@ -118,3 +118,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 25**: Synthetic mousedown event dispatching on skip buttons.
 - **Update 26**: Synthetic click event dispatching on skip buttons.
 - **Update 27**: Synthetic pointerup event dispatching on skip buttons.
+- **Update 28**: Synthetic mouseup event dispatching on skip buttons.
