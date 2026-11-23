@@ -137,3 +137,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 44**: Automatic removal of sponsored banner promos and masthead ads.
 - **Update 45**: Suppression of companion slot rendering containers.
 - **Update 46**: Removal of in-feed ad layout renderer elements.
+- **Update 47**: Removal of ytd-promoted-video-renderer elements.
