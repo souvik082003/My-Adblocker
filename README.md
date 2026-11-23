@@ -134,3 +134,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 41**: User playback rate preservation before ad acceleration.
 - **Update 42**: User audio volume and mute state restoration after ad completion.
 - **Update 43**: YouTube Shorts navigation and sponsored reel auto-advancement.
+- **Update 44**: Automatic removal of sponsored banner promos and masthead ads.
