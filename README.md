@@ -151,3 +151,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 58**: Periodic timer interval fallback for ultra-fast ad checks.
 - **Update 59**: JioHotstar video container ad detection and skipping.
 - **Update 60**: JioHotstar billboard video automatic muting and pausing.
+- **Update 61**: Billboard tray banner element suppression in DOM tree.
