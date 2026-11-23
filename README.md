@@ -340,3 +340,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 248**: JioHotstar billboard muting assertion (Cycle 8).
 - **Update 249**: Anti-adblock dialog auto-dismissal check (Cycle 8).
 - **Update 250**: CSP header strict sandbox compliance (Cycle 8).
+- **Update 251**: Cross-world postMessage event safety audit (Cycle 8).
