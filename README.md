@@ -176,3 +176,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 83**: Removal of downloads browser permissions from manifest.
 - **Update 84**: Cleanup of googlevideo.com header modification rules.
 - **Update 85**: Memory leak prevention on long-running tab sessions.
+- **Update 86**: Garbage collection friendly storage access patterns.
