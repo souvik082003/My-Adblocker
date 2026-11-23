@@ -171,3 +171,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 78**: Active capabilities checklist rendering in popup UI.
 - **Update 79**: Downloader UI components permanent decommissioning.
 - **Update 80**: Removal of stream interception hooks and deciphering logic.
+- **Update 81**: Elimination of videoplayback chunk network monitoring.
