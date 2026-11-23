@@ -94,3 +94,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 1**: Manifest V3 core configuration & schema declarations.
 - **Update 2**: Declarative net request rule sets compilation & priority mapping.
 - **Update 3**: Permissions boundary audit: downloads removed, DNR retained.
+- **Update 4**: Host permissions scoped strictly to streaming endpoints.
