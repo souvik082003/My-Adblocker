@@ -152,3 +152,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 59**: JioHotstar video container ad detection and skipping.
 - **Update 60**: JioHotstar billboard video automatic muting and pausing.
 - **Update 61**: Billboard tray banner element suppression in DOM tree.
+- **Update 62**: Live-stream commercial break call-to-action overlay hiding.
