@@ -163,3 +163,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 70**: Real-time shield status indicator dot and glow animations.
 - **Update 71**: Live active tab hostname detection for YouTube and JioHotstar.
 - **Update 72**: Platform specific indicator pills with active/pause states.
+- **Update 73**: Site-specific ad blocked counter computation and display.
