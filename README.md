@@ -125,3 +125,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 32**: Close button simulation for overlay and banner advertisements.
 - **Update 33**: MutationObserver subtree monitoring on document.documentElement.
 - **Update 34**: HTML5 video element acquisition and validation.
+- **Update 35**: In-stream advertisement state detection via ad-showing class.
