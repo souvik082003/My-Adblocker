@@ -143,3 +143,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 50**: Removal of ytd-display-ad-renderer elements.
 - **Update 51**: Paper toast notification suppression for blocker warnings.
 - **Update 52**: Enforcement dialog dismissal and iron overlay backdrop removal.
+- **Update 53**: Body overflow style clearance to prevent page scrolling freeze.
