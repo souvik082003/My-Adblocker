@@ -136,3 +136,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 43**: YouTube Shorts navigation and sponsored reel auto-advancement.
 - **Update 44**: Automatic removal of sponsored banner promos and masthead ads.
 - **Update 45**: Suppression of companion slot rendering containers.
+- **Update 46**: Removal of in-feed ad layout renderer elements.
