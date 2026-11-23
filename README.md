@@ -142,3 +142,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 49**: Removal of ytd-statement-banner-renderer elements.
 - **Update 50**: Removal of ytd-display-ad-renderer elements.
 - **Update 51**: Paper toast notification suppression for blocker warnings.
+- **Update 52**: Enforcement dialog dismissal and iron overlay backdrop removal.
