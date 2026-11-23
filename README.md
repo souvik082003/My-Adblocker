@@ -679,3 +679,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 587**: YouTube Shorts navigation listener test (Cycle 25).
 - **Update 588**: JioHotstar billboard muting assertion (Cycle 25).
 - **Update 589**: Anti-adblock dialog auto-dismissal check (Cycle 25).
+- **Update 590**: CSP header strict sandbox compliance (Cycle 25).
