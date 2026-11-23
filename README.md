@@ -139,3 +139,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 46**: Removal of in-feed ad layout renderer elements.
 - **Update 47**: Removal of ytd-promoted-video-renderer elements.
 - **Update 48**: Removal of ytd-promoted-sparkles-web-renderer elements.
+- **Update 49**: Removal of ytd-statement-banner-renderer elements.
