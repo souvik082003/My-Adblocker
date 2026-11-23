@@ -113,3 +113,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 20**: Debounced counter persistence in chrome.storage.local.
 - **Update 21**: Separate tracking counters for YouTube and JioHotstar.
 - **Update 22**: Storage change listeners for seamless multi-tab state sync.
+- **Update 23**: Dynamic adblockEnabled toggle switch handling.
