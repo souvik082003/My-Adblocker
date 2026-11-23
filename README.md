@@ -173,3 +173,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 80**: Removal of stream interception hooks and deciphering logic.
 - **Update 81**: Elimination of videoplayback chunk network monitoring.
 - **Update 82**: Removal of background service worker dependencies.
+- **Update 83**: Removal of downloads browser permissions from manifest.
