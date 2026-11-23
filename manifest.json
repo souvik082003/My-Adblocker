@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Universal AdBlocker",
-  "version": "3.0",
-  "description": "Smart Universal Ad Blocker & Auto-Skipper for YouTube and JioHotstar. Built for personal educational use.",
+  "version": "3.1",
+  "description": "Smart Universal Ad Blocker & Auto-Skipper for YouTube and JioHotstar.",
   "permissions": [
     "declarativeNetRequest",
     "storage",

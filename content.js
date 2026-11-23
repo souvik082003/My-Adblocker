@@ -51,7 +51,8 @@
   }
 
   chrome.storage.local.get(['adblockEnabled'], (result) => {
-    syncEnabled(result.adblockEnabled);
+    if (chrome.runtime.lastError) return;
+    syncEnabled(result ? result.adblockEnabled : true);
   });
 
   chrome.storage.onChanged.addListener((changes) => {
@@ -64,6 +65,7 @@
     if (msg && msg.type === 'ADBLOCK_TOGGLE') {
       syncEnabled(msg.enabled);
       sendResponse({ success: true, enabled: msg.enabled });
+      return false;
     }
   });
 
@@ -86,8 +88,9 @@
       try {
         const platformKey = platform === 'youtube' ? 'adblockCount_youtube' : 'adblockCount_hotstar';
         chrome.storage.local.get(['adblockCount', platformKey], (res) => {
-          const total = (res.adblockCount || 0) + toAdd;
-          const siteTotal = (res[platformKey] || 0) + toAdd;
+          if (chrome.runtime.lastError) return;
+          const total = ((res && res.adblockCount) || 0) + toAdd;
+          const siteTotal = ((res && res[platformKey]) || 0) + toAdd;
           chrome.storage.local.set({
             adblockCount: total,
             [platformKey]: siteTotal

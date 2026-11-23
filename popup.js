@@ -17,6 +17,7 @@ const reloadBtn = document.getElementById('reload-btn');
 const resetBtn = document.getElementById('reset-btn');
 
 let activePlatform = 'other';
+
 let cachedStorage = {
   adblockCount: 0,
   adblockCount_youtube: 0,
@@ -99,6 +100,7 @@ function renderState(enabled) {
 
 function detectActiveTab(callback) {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (chrome.runtime.lastError) return;
     const activeTab = tabs && tabs[0];
     const rawUrl = (activeTab && (activeTab.url || activeTab.pendingUrl)) || '';
 
@@ -135,21 +137,19 @@ function detectActiveTab(callback) {
 }
 
 detectActiveTab(() => {
-  chrome.storage.local.get(['adblockEnabled', 'adblockCount', 'adblockCount_youtube', 'adblockCount_hotstar'], (result) => {
-    const enabled = result.adblockEnabled !== false;
-    renderState(enabled);
-    if (chrome.declarativeNetRequest && chrome.declarativeNetRequest.updateEnabledRulesets) {
-      chrome.declarativeNetRequest.updateEnabledRulesets({
-        enableRulesetIds: enabled ? ['ruleset_1'] : [],
-        disableRulesetIds: enabled ? [] : ['ruleset_1']
-      }).catch(() => {});
+  chrome.storage.local.get(
+    ['adblockEnabled', 'adblockCount', 'adblockCount_youtube', 'adblockCount_hotstar'],
+    (result) => {
+      if (chrome.runtime.lastError) return;
+      const enabled = result.adblockEnabled !== false;
+      renderState(enabled);
+      updateMetrics({
+        adblockCount: result.adblockCount || 0,
+        adblockCount_youtube: result.adblockCount_youtube || 0,
+        adblockCount_hotstar: result.adblockCount_hotstar || 0
+      });
     }
-    updateMetrics({
-      adblockCount: result.adblockCount || 0,
-      adblockCount_youtube: result.adblockCount_youtube || 0,
-      adblockCount_hotstar: result.adblockCount_hotstar || 0
-    });
-  });
+  );
 });
 
 chrome.storage.onChanged.addListener((changes) => {
@@ -168,26 +168,42 @@ chrome.storage.onChanged.addListener((changes) => {
 toggle.addEventListener('change', () => {
   const enabled = toggle.checked;
   renderState(enabled);
-  chrome.storage.local.set({ adblockEnabled: enabled });
+  chrome.storage.local.set({ adblockEnabled: enabled }, () => {
+    void chrome.runtime.lastError;
+  });
 
   if (chrome.declarativeNetRequest && chrome.declarativeNetRequest.updateEnabledRulesets) {
-    chrome.declarativeNetRequest.updateEnabledRulesets({
-      enableRulesetIds: enabled ? ['ruleset_1'] : [],
-      disableRulesetIds: enabled ? [] : ['ruleset_1']
-    }).catch(() => {});
+    chrome.declarativeNetRequest.getEnabledRulesets((enabledRulesets) => {
+      if (chrome.runtime.lastError) return;
+      const isEnabled = Array.isArray(enabledRulesets) && enabledRulesets.includes('ruleset_1');
+      if (enabled && !isEnabled) {
+        chrome.declarativeNetRequest.updateEnabledRulesets({ enableRulesetIds: ['ruleset_1'] }, () => {
+          void chrome.runtime.lastError;
+        });
+      } else if (!enabled && isEnabled) {
+        chrome.declarativeNetRequest.updateEnabledRulesets({ disableRulesetIds: ['ruleset_1'] }, () => {
+          void chrome.runtime.lastError;
+        });
+      }
+    });
   }
 
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (chrome.runtime.lastError) return;
     const activeTab = tabs && tabs[0];
     if (!activeTab || !activeTab.id || !activeTab.url) return;
     const url = activeTab.url.toLowerCase();
-    const isTarget = url.includes('youtube.com') ||
-                     url.includes('hotstar.com') ||
-                     url.includes('jiohotstar.com') ||
-                     url.includes('jiocinema.com');
+    const isTarget =
+      url.includes('youtube.com') ||
+      url.includes('hotstar.com') ||
+      url.includes('jiohotstar.com') ||
+      url.includes('jiocinema.com');
     if (isTarget) {
       chrome.tabs.sendMessage(activeTab.id, { type: 'ADBLOCK_TOGGLE', enabled }, () => {
-        chrome.tabs.reload(activeTab.id);
+        void chrome.runtime.lastError;
+        chrome.tabs.reload(activeTab.id, () => {
+          void chrome.runtime.lastError;
+        });
       });
     }
   });
@@ -196,8 +212,11 @@ toggle.addEventListener('change', () => {
 if (reloadBtn) {
   reloadBtn.addEventListener('click', () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (chrome.runtime.lastError) return;
       if (tabs && tabs[0] && tabs[0].id) {
-        chrome.tabs.reload(tabs[0].id);
+        chrome.tabs.reload(tabs[0].id, () => {
+          void chrome.runtime.lastError;
+        });
         const originalHTML = reloadBtn.innerHTML;
         reloadBtn.textContent = 'Reloaded!';
         setTimeout(() => {
@@ -210,21 +229,25 @@ if (reloadBtn) {
 
 if (resetBtn) {
   resetBtn.addEventListener('click', () => {
-    chrome.storage.local.set({
-      adblockCount: 0,
-      adblockCount_youtube: 0,
-      adblockCount_hotstar: 0
-    }, () => {
-      updateMetrics({
+    chrome.storage.local.set(
+      {
         adblockCount: 0,
         adblockCount_youtube: 0,
         adblockCount_hotstar: 0
-      });
-      const originalHTML = resetBtn.innerHTML;
-      resetBtn.textContent = 'Reset!';
-      setTimeout(() => {
-        resetBtn.innerHTML = originalHTML;
-      }, 1000);
-    });
+      },
+      () => {
+        if (chrome.runtime.lastError) return;
+        updateMetrics({
+          adblockCount: 0,
+          adblockCount_youtube: 0,
+          adblockCount_hotstar: 0
+        });
+        const originalHTML = resetBtn.innerHTML;
+        resetBtn.textContent = 'Reset!';
+        setTimeout(() => {
+          resetBtn.innerHTML = originalHTML;
+        }, 1000);
+      }
+    );
   });
 }
