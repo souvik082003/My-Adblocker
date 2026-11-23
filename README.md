@@ -116,3 +116,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 23**: Dynamic adblockEnabled toggle switch handling.
 - **Update 24**: Synthetic pointerdown event dispatching on skip buttons.
 - **Update 25**: Synthetic mousedown event dispatching on skip buttons.
+- **Update 26**: Synthetic click event dispatching on skip buttons.
