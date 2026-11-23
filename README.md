@@ -104,3 +104,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 11**: In-memory ytInitialPlayerResponse interception and caching.
 - **Update 12**: Clean adPlacements stripping logic in player response objects.
 - **Update 13**: Recursive playerResponse ad parameter sanitization.
+- **Update 14**: Window.ytInitialPlayerResponse getter/setter property definition.
