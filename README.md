@@ -158,3 +158,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 65**: Static network rule 2: doubleclick.net multi-resource blocking.
 - **Update 66**: Static network rule 3: googleadservices.com request blocking.
 - **Update 67**: Declarative ruleset enabling and disabling synchronization.
+- **Update 68**: Popup glassmorphic card styling and OLED dark background.
