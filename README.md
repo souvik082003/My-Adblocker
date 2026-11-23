@@ -141,3 +141,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 48**: Removal of ytd-promoted-sparkles-web-renderer elements.
 - **Update 49**: Removal of ytd-statement-banner-renderer elements.
 - **Update 50**: Removal of ytd-display-ad-renderer elements.
+- **Update 51**: Paper toast notification suppression for blocker warnings.
