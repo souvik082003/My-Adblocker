@@ -100,3 +100,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 7**: MAIN world execution timing for inject.js set to document_start.
 - **Update 8**: Isolated world content script bindings for YouTube.
 - **Update 9**: Isolated world content script bindings for JioHotstar.
+- **Update 10**: Content script CSS isolation with root disabled selectors.
