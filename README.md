@@ -114,3 +114,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 21**: Separate tracking counters for YouTube and JioHotstar.
 - **Update 22**: Storage change listeners for seamless multi-tab state sync.
 - **Update 23**: Dynamic adblockEnabled toggle switch handling.
+- **Update 24**: Synthetic pointerdown event dispatching on skip buttons.
