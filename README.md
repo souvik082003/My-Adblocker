@@ -168,3 +168,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 75**: Estimated saved watch time calculation logic.
 - **Update 76**: Tab reload action button with visual feedback transition.
 - **Update 77**: Counter reset button with storage clearing handler.
+- **Update 78**: Active capabilities checklist rendering in popup UI.
