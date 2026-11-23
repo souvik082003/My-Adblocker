@@ -161,3 +161,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 68**: Popup glassmorphic card styling and OLED dark background.
 - **Update 69**: Popup brand header with 32px icon and version badge.
 - **Update 70**: Real-time shield status indicator dot and glow animations.
+- **Update 71**: Live active tab hostname detection for YouTube and JioHotstar.
