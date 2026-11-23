@@ -179,3 +179,4 @@ This project is created strictly for **personal educational and research purpose
 - **Update 86**: Garbage collection friendly storage access patterns.
 - **Update 87**: High-DPI icon asset packaging (16px, 32px, 48px, 128px).
 - **Update 88**: Strict CSP compliance under Manifest V3 specifications.
+- **Update 89**: DOM mutation throttling to eliminate browser frame drops.
